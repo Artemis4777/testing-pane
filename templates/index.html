@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="https://cdn.cardknox.com/ifields/2.14.2211.1101/ifields.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Home</title>
@@ -46,6 +47,14 @@
                         <input type="text" class="form-control" id="api-key" name="api-key" required>
                         <div class="invalid-feedback">
                             API key is required
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="ifields-key" class="form-label">iFields key</label>
+                        <input type="text" class="form-control" id="ifields-key" name="ifields-key" required>
+                        <div class="invalid-feedback">
+                            iFields key is required
                         </div>
                     </div>
 
@@ -155,11 +164,8 @@
 
                         <div class="col-md-6">
                             <label for="cc-number" class="form-label">Credit card number</label>
-                            <input type="text" class="form-control" id="cc-number" placeholder="4444333322221111"
-                                name="cc-number" required>
-                            <div class="invalid-feedback">
-                                Credit card number is required
-                            </div>
+                            <iframe data-ifields-id="card-number" data-ifields-placeholder="4444333322221111" src="https://cdn.cardknox.com/ifields/2.14.2211.1101/ifield.htm"></iframe>
+                            <input data-ifields-id="card-number-token" type="hidden" name="cc-number" id="cc-number">
                         </div>
 
                         <div class="col-md-3">
@@ -173,10 +179,12 @@
 
                         <div class="col-md-3">
                             <label for="cc-cvv" class="form-label">CVV</label>
-                            <input type="text" class="form-control" id="cc-cvv" placeholder="123" name="cc-cvv">
-                            <div class="invalid-feedback">
-                                Security code required
-                            </div>
+                            <iframe data-ifields-id="cvv" data-ifields-placeholder="123" src="https://cdn.cardknox.com/ifields/2.14.2211.1101/ifield.htm" ></iframe>
+                            <input data-ifields-id="cvv-token" type="hidden" name="cc-cvv" id="cc-cvv">
+                        </div>
+                        <div>
+                            <label id="iFields-Status"></label>
+                            <label data-ifields-id="card-data-error" style="color: red;"></label>
                         </div>
                     </div>
 
