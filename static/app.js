@@ -1,4 +1,15 @@
 //JavaScript functions for main page
+let styles = {
+    "width": "98%",
+	"font-size": "1rem",
+	"font-weight": "400",
+	"line-height": "1.5",
+	"color": "#212529",
+    "border": "0",
+}
+setIfieldStyle('card-number', styles);
+setIfieldStyle('cvv', styles);
+
 
 //base api call
 const form = document.getElementById('paymentform');

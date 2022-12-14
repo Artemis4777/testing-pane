@@ -9,7 +9,7 @@ application = Flask(__name__)
 # serve main page
 @application.route("/")
 def index():
-    return render_template(["index.html", "app.js"])
+    return render_template(["index.html", "app.js", "style.css"])
 
 
 # submit to gateway
