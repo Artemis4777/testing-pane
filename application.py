@@ -66,34 +66,34 @@ def submit():
 #3D Secure friction handling
 @application.route("/verify", methods=["POST"])
 def verify():
-    print(request.form)
+    print(request.is_json)
+    content = request.get_json()
+    print(content)
     headers = {"Content-Type": "application/json"}
     url = "https://x1.cardknox.com/verifyjson"
-    key = request.form.get("api-key")
-    dupe = "true" if request.form.get("allow-duplicate") == "on" else "false"
-    xRefnum = request.form.get("xRefNum")
-    xCavv = request.form.get("xCavv")
-    xEci = request.form.get("xEci")
-    x3dsAuthenticationStatus = request.form.get("x3dsAuthenticationStatus")
-    x3dsSignatureVerificationStatus = request.form.get("x3dsSignatureVerificationStatus")
-    x3dsActionCode = request.form.get("x3dsActionCode")
-    x3dsError = request.form.get("x3dsError")
+    key = content["api-key"]
+    dupe = "true" if content["allow-duplicate"] == "on" else "false"
+    xRefnum = content["xRefNum"]
+    xCavv = content["xCavv"]
+    xEci = content["xEci"]
+    x3dsAuthenticationStatus = content["x3dsAuthenticationStatus"]
+    x3dsSignatureVerificationStatus = content["x3dsSignatureVerificationStatus"]
+    x3dsActionCode = content["x3dsActionCode"]
+    x3dsError = content["x3dsError"]
     print(x3dsError)
-    payload = json.dumps(
-        {
-            "xsoftwareversion": "1.0.0",
-            "xversion": "5.0.0",
-            "xsoftwarename": "NB Test",
-            "xkey": key,
-            "xallowduplicate": dupe,
-            "xRefnum": xRefnum,
-            "xCavv": xCavv,
-            "xEci": xEci,
-            "x3dsAuthenticationStatus": x3dsAuthenticationStatus,
-            "x3dsSignatureVerificationStatus": x3dsSignatureVerificationStatus,
-            "x3dsActionCode": x3dsActionCode,
-        }
-    )
+    payload = json.dumps({
+        "xsoftwareversion": "1.0.0",
+        "xversion": "5.0.0",
+        "xsoftwarename": "NB Test",
+        "xkey": key,
+        "xallowduplicate": dupe,
+        "xRefnum": xRefnum,
+        "xCavv": xCavv,
+        "xEci": xEci,
+        "x3dsAuthenticationStatus": x3dsAuthenticationStatus,
+        "x3dsSignatureVerificationStatus": x3dsSignatureVerificationStatus,
+        "x3dsActionCode": x3dsActionCode,
+    })
     apiCall = requests.request("POST", url, headers = headers, data = payload)
     response = apiCall.json()
     print(response["xStatus"], response["xRefNum"])
