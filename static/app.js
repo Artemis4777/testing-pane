@@ -6,6 +6,7 @@
 //all variables for this file
 const duplicate = document.getElementById("allow-duplicate");
 const xkey = document.getElementById("api-key");
+const amount = document.getElementById("amount");
 const submitBtn = document.getElementById('paymentbutton');
 const enviro = document.getElementById('3ds-environment').value;
 const threeDe = document.getElementById('3ds-environment-d');
@@ -15,15 +16,19 @@ const enableFriction = document.getElementById('friction-switch');
 const billing = document.getElementById('billing');
 const billInfo = document.getElementById('billing info');
 const form = document.getElementById('paymentform');
+const test = {"xStatus": "Default", "xRefNum": "Value"};
+const toastTest = document.getElementById("toast-test");
 
 //setting iFields styles
 let styles = {
-    "width": "98%",
+    "width": "90%",
     "font-size": "1rem",
     "font-weight": "400",
     "line-height": "1.5",
     "color": "#212529",
     "border": "0",
+    "overflow-x": "hidden",
+    "overflow-y": "hidden",
 };
 setIfieldStyle('card-number', styles);
 setIfieldStyle('cvv', styles);
@@ -55,8 +60,11 @@ form.addEventListener('submit', (event) => {
                 method: "POST",
                 body: formData
             })
-            .then(response => response.json())  // Parse the response as JSON
-            .then(data => handleVerify(data))
+                .then(response => response.json())  // Parse the response as JSON
+                .then(data => {
+                    displayToast(data.Response, "Initial Transaction");
+                    handleVerify(data)
+                })
         },
         function () {
             submitBtn.disabled = false;
@@ -69,8 +77,7 @@ form.addEventListener('submit', (event) => {
 function handleVerify(response) {
     response = response.Response;
     console.log(response);
-    if (response.xResult == "V")
-    {
+    if (response.xResult == "V") {
         verify3DS(response);
     }
     else {
@@ -96,11 +103,14 @@ function handle3DSResults(actionCode, xCavv, xEciFlag, xRefNum, xAuthenticateSta
     };
     fetch("/verify", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postData)
     })
-    .then(response => response.json())  // Parse the response as JSON
-    .then(data => console.log(data.Response), submitBtn.disabled = false);  // Do something with the data
+        .then(response => response.json())
+        .then(data => {
+            displayToast(data.Response, "After Friction");
+            submitBtn.disabled = false;
+        });
 };
 
 //hide or show billing
@@ -130,3 +140,42 @@ function options3ds() {
 };
 threeD.addEventListener("change", options3ds);
 options3ds();
+
+
+
+
+//add new toasts
+function displayToast(messages = test, type = "Test") {
+    const message = messages.xStatus + " " + messages.xRefNum
+    console.log(message, type);
+    const toastElement = document.createElement('div');
+    toastElement.setAttribute('class', 'toast fade');
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+    toastElement.innerHTML = `
+            <div class="toast-header">
+            <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+            <rect width="100%" height="100%" fill="#007aff"></rect></svg>
+            <strong class="me-auto">Result</strong>
+            <small class="text-muted">${type}</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
+            </button>
+            </div>
+            <div class="toast-body">
+            ${message}
+            </div>
+        `;
+    const toastStack = document.querySelector('#toast-stack');
+    toastStack.prepend(toastElement);
+    toastElement.classList.add('show');
+    const closeButton = toastElement.querySelector('.close');
+    closeButton.addEventListener('click', function () {
+        toastElement.classList.remove('show');
+    });
+};
+
+toastTest.addEventListener("click", function (event) {
+    event.preventDefault();
+    displayToast(test, "Log Test");
+})

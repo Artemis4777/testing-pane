@@ -25,8 +25,9 @@
             </div>
 
             <form id=paymentform class="needs-validation, row g-5" novalidate>
-                <div class="col-md-5 col-lg-3 order-md-last">
+                <div class="col-md-4 col-lg-3 order-md">
 
+                    <h4 class="mb-3">Configuration Options</h4>
                     <div class="form-check form-switch">
                         <input type="checkbox" class="form-check-input" id="billing" name="billing" checked>
                         <label class="form-check-label">Show Billing Fields</label>
@@ -88,7 +89,22 @@
                     </div>
 
                 </div>
-                <div class="col-md-7 col-lg-9">
+
+                <div class="col-md-3 col-lg-3 order-last">
+
+                    <h4 class="mb-3">Transaction Logs</h4>
+                    <div class="overflow-auto toast-stacke" aria-live="polite" aria-atomic="true" style="position: relative;height: 600px;">
+                        <div class="toast-container p-3 d-flex flex-column justify-content-center align-items-center w-100" id="toast-stack" style="position: relative">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button id="toast-test" type="button" class="w-100 btn btn-primary btn-lg">New Dummy Log</button>
+
+                </div>
+
+                <div class="col-md-5 col-lg-6 order-md-first">
 
 
                     <div id="billing info">
@@ -141,8 +157,7 @@
 
                             <div class="col-4">
                                 <label for="city" class="form-label">City</label>
-                                <input type="text" class="form-control" id="city" placeholder="Howell"
-                                    name="city">
+                                <input type="text" class="form-control" id="city" placeholder="Howell" name="city">
                                 <div class="invalid-feedback">
                                     Please enter your city.
                                 </div>
@@ -283,7 +298,9 @@
                         <label id="iFields-Status"></label>
                         <label data-ifields-id="card-data-error" style="color: red;"></label>
                     </div>
+                </div>
             </form>
+
         </main>
 
         <footer class="my-5 pt-5 text-muted text-center text-small">
@@ -295,6 +312,7 @@
             </ul>
         </footer>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
