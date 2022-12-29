@@ -62,7 +62,7 @@ form.addEventListener('submit', (event) => {
             })
                 .then(response => response.json())  // Parse the response as JSON
                 .then(data => {
-                    displayToast(data.Response, "Initial Transaction");
+                    displayToast(data.Response, "Sale");
                     handleVerify(data)
                 })
         },
@@ -81,7 +81,6 @@ function handleVerify(response) {
         verify3DS(response);
     }
     else {
-        console.log(response.Response.xResult)
         submitBtn.disabled = false;
     };
 };
@@ -108,7 +107,7 @@ function handle3DSResults(actionCode, xCavv, xEciFlag, xRefNum, xAuthenticateSta
     })
         .then(response => response.json())
         .then(data => {
-            displayToast(data.Response, "After Friction");
+            displayToast(data.Response, "Verify");
             submitBtn.disabled = false;
         });
 };
@@ -169,7 +168,7 @@ function displayToast(messages = test, type = "Test") {
     const toastStack = document.querySelector('#toast-stack');
     toastStack.prepend(toastElement);
     toastElement.classList.add('show');
-    const closeButton = toastElement.querySelector('.close');
+    const closeButton = toastElement.querySelector('.btn-close');
     closeButton.addEventListener('click', function () {
         toastElement.classList.remove('show');
     });
