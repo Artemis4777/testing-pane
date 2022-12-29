@@ -33,3 +33,6 @@
     background: #0453c9;
 }
 
+.toast-header {
+	background-color: rgba(234, 234, 234, 0.85);
+}

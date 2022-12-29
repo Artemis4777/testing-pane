@@ -16,7 +16,7 @@ const enableFriction = document.getElementById('friction-switch');
 const billing = document.getElementById('billing');
 const billInfo = document.getElementById('billing info');
 const form = document.getElementById('paymentform');
-const test = {"xStatus": "Default", "xRefNum": "Value"};
+const test = { "xStatus": "Default", "xRefNum": "Value" };
 const toastTest = document.getElementById("toast-test");
 
 //setting iFields styles
@@ -141,6 +141,12 @@ threeD.addEventListener("change", options3ds);
 options3ds();
 
 
+//get time
+function time() {
+    const currentTime = new Date();
+    const timeString = currentTime.toLocaleTimeString();
+    return timeString;
+}
 
 
 //add new toasts
@@ -156,7 +162,7 @@ function displayToast(messages = test, type = "Test") {
             <div class="toast-header">
             <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
             <rect width="100%" height="100%" fill="#007aff"></rect></svg>
-            <strong class="me-auto">Result</strong>
+            <strong class="me-auto">${time()}</strong>
             <small class="text-muted">${type}</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
             </button>
@@ -178,3 +184,20 @@ toastTest.addEventListener("click", function (event) {
     event.preventDefault();
     displayToast(test, "Log Test");
 })
+
+
+// payment type event listeners
+const paymentType = document.querySelectorAll('input[name="paymentMethod"]');
+const paymentTypeFieldSets = document.querySelectorAll('.paymentMethod');
+paymentType.forEach(paymentType => {
+    paymentType.addEventListener('change', function (event) {
+        const selectedMethod = event.target.id;
+        displayToast({ "xStatus": selectedMethod, "xRefNum": " " }, "New Method");
+        paymentTypeFieldSets.forEach(paymentTypeFieldSet => {
+            paymentTypeFieldSet.classList.add('d-none')
+        })
+        const method = document.querySelector(`#${selectedMethod}-fields`)
+        method.classList.remove('d-none')
+    });
+});
+
