@@ -54,11 +54,11 @@ form.addEventListener('submit', (event) => {
     submitBtn.disabled = true;
     getTokens(
         function () {
-            const formData = new FormData(form);
-            console.log(formData)
+            let payload = formToJSON(form)
             fetch("/submit", {
                 method: "POST",
-                body: formData
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
             })
                 .then(response => response.json())  // Parse the response as JSON
                 .then(data => {
@@ -195,9 +195,92 @@ paymentType.forEach(paymentType => {
         displayToast({ "xStatus": selectedMethod, "xRefNum": " " }, "New Method");
         paymentTypeFieldSets.forEach(paymentTypeFieldSet => {
             paymentTypeFieldSet.classList.add('d-none')
-        })
-        const method = document.querySelector(`#${selectedMethod}-fields`)
-        method.classList.remove('d-none')
+        });
+        const method = document.querySelector(`#${selectedMethod}-fields`);
+        method.classList.remove('d-none');
+        if (selectedMethod === "gpay") {
+            ckGooglePay.enableGooglePay({amountField: amount});
+
+            submitBtn.classList.add('d-none');
+        }
+        else {
+            submitBtn.classList.remove('d-none');
+        };
     });
 });
 
+
+//googlepay
+const merchantName = document.getElementById('merchantName');
+const gpRequest = {
+    //environment: function () {return gpayEnv()},
+    merchantInfo: {
+        merchantName: merchantName.value
+    },
+    buttonOptions: {
+        buttonSizeMode: GPButtonSizeMode.fill
+    },
+    billingParams: {
+        billingAddressRequired: true,
+        billingAddressFormat: GPBillingAddressFormat.full
+    },
+    onGetTransactionInfo: function () {return {totalPriceStatus: "FINAL", currencyCode: "USD", totalPrice: amount.value}},
+    onProcessPayment: function(paymentResponse) {return processGP(paymentResponse)},
+    //handleResponse: handleResponse(resp),
+    onPaymentCanceled: function () {displayToast({ "xStatus": "Canceled", "xRefNum": "" }, "Google Pay")}
+};
+function initGP() {
+    console.log("init")
+    return {
+        merchantInfo: gpRequest.merchantInfo,
+        buttonOptions: gpRequest.buttonOptions,
+        onGetTransactionInfo: "gpRequest.onGetTransactionInfo",
+        //environment: "gpRequest.environment",
+        billingParameters: gpRequest.billingParams,
+        onProcessPayment: "gpRequest.onProcessPayment",
+        onPaymentCanceled: "gpRequest.onPaymentCanceled"
+    };
+}
+function gpayEnv() {
+    const gpenv = document.getElementById('gpay-environment').value;
+    if (gpenv === "production") {
+        return "PRODUCTION";
+    }
+    else {
+        return "TEST";
+    };
+};
+function processGP(paymentResponse) {
+    return new Promise(function (resolve, reject) {
+        console.log("paymentResponse", JSON.stringify(paymentResponse));
+        paymentToken = paymentResponse.paymentData.paymentMethodData.tokenizationData.token;
+        console.log("paymentToken", paymentToken);
+        let payload = paymentResponse + form
+        fetch("/googlepay", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.Response.xStatus) {
+                    if (data.Response.xStatus === "Approved") {
+                        resolve(data)
+                    }
+                    else {reject(data)}
+                }
+                else {reject(data)}
+                displayToast(data.Response, "Google Pay");
+            });
+    })
+}
+
+//convert form to json
+function formToJSON(form) {
+    let formData = new FormData(form)
+    let object = {};
+    formData.forEach((value, key) => {
+        object[key] = value;
+    });
+    return object;
+}

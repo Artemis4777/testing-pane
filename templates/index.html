@@ -30,67 +30,69 @@
             <form id=paymentform class="needs-validation, row g-5" novalidate>
                 <div class="col-md-4 col-lg-3 order-md">
 
-                    <h4 class="mb-3">Configuration Options</h4>
-                    <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="billing" name="billing">
-                        <label class="form-check-label">Show Billing Fields</label>
-                    </div>
+                    <div class="row g-3">
+                        <h4 class="mb-3">Configuration Options</h4>
+                        
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="billing" name="billing">
+                            <label class="form-check-label">Show Billing Fields</label>
+                        </div>
 
-                    <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="allow-duplicate" name="allow-duplicate">
-                        <label class="form-check-label">Allow Duplicate</label>
-                    </div>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="allow-duplicate" name="allow-duplicate">
+                            <label class="form-check-label">Allow Duplicate</label>
+                        </div>
 
-                    <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="enable-3ds" name="enable-3ds">
-                        <label class="form-check-label">Enable 3D Secure</label>
-                    </div>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="enable-3ds" name="enable-3ds">
+                            <label class="form-check-label">Enable 3D Secure</label>
+                        </div>
 
-                    <div class="form-check form-switch d-none" id="friction-switch">
-                        <input type="checkbox" class="form-check-input" id="enable-3ds-f" name="enable-3ds-f">
-                        <label class="form-check-label">Enable 3D Secure with Friction</label>
-                    </div>
+                        <div class="form-check form-switch d-none" id="friction-switch">
+                            <input type="checkbox" class="form-check-input" id="enable-3ds-f" name="enable-3ds-f">
+                            <label class="form-check-label">Enable 3D Secure with Friction</label>
+                        </div>
 
-                    <div id="3ds-environment-d" class="d-none">
-                        <label for="3ds-environment" class="form-label">3DS Environment</label>
-                        <select class="form-select" id="3ds-environment" name="3ds-environment">
-                            <option value="staging">Staging</option>
-                            <option value="production">Production</option>
-                        </select>
-                    </div>
+                        <div id="3ds-environment-d" class="d-none col">
+                            <label for="3ds-environment" class="form-label">3DS Environment</label>
+                            <select class="form-select" id="3ds-environment" name="3ds-environment">
+                                <option value="staging">Staging</option>
+                                <option value="production">Production</option>
+                            </select>
+                        </div>
 
-                    <div class="col-md-12">
-                        <label for="key" class="form-label">API key</label>
-                        <input type="text" class="form-control" id="api-key" name="api-key" required>
-                        <div class="invalid-feedback">
-                            API key is required
+                        <div class="col-md-12">
+                            <label for="key" class="form-label">API key</label>
+                            <input type="text" class="form-control" id="api-key" name="api-key" required>
+                            <div class="invalid-feedback">
+                                API key is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="ifields-key" class="form-label">iFields key</label>
+                            <input type="text" class="form-control" id="ifields-key" name="ifields-key" required>
+                            <div class="invalid-feedback">
+                                iFields key is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="command" class="form-label">Command</label>
+                            <input type="text" class="form-control" id="command" name="command" required>
+                            <div class="invalid-feedback">
+                                Command is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="text" class="form-control" id="amount" name="amount" required>
+                            <div class="invalid-feedback">
+                                Amount is required
+                            </div>
                         </div>
                     </div>
-
-                    <div class="col-md-12">
-                        <label for="ifields-key" class="form-label">iFields key</label>
-                        <input type="text" class="form-control" id="ifields-key" name="ifields-key" required>
-                        <div class="invalid-feedback">
-                            iFields key is required
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="command" class="form-label">Command</label>
-                        <input type="text" class="form-control" id="command" name="command" required>
-                        <div class="invalid-feedback">
-                            Command is required
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="amount" class="form-label">Amount</label>
-                        <input type="text" class="form-control" id="amount" name="amount" required>
-                        <div class="invalid-feedback">
-                            Amount is required
-                        </div>
-                    </div>
-
                 </div>
 
                 <div class="col-md-3 col-lg-3 order-last">
@@ -294,11 +296,28 @@
                     </div>
 
                     <div class="row gy-3 d-none paymentMethod" id="gpay-fields">
-                        <iframe id="igp" class="gp hidden" data-ifields-id="igp" data-ifields-oninit="gpRequest.initGP"
-                            src=https://cdn.cardknox.com/ifields/2.14.2211.1101/igp.htm allowpaymentrequest
-                            sandbox="allow-popups allow-modals allow-scripts allow-same-origin
-                            allow-forms allow-popups-to-escape-sandbox allow-top-navigation">
-                        </iframe>
+
+                        <div class="col-md-12">
+                            <label for="gpay-environment" class="form-label">Google Pay Environment</label>
+                            <select class="form-select" id="gpay-environment" name="gpay-environment">
+                                <option value="test">Test</option>
+                                <option value="production">Production</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="merchantName" class="form-label">Merchant Name</label>
+                            <input type="text" class="form-control" id="merchantName" value="Testing Pane"
+                                name="merchantName">
+                        </div>
+
+                        <div class="col-md-12">
+                            <iframe id="igp" class="gp form-control" data-ifields-id="igp" data-ifields-oninit="initGP"
+                                src=https://cdn.cardknox.com/ifields/2.14.2211.1101/igp.htm allowpaymentrequest sandbox="allow-popups allow-modals allow-scripts allow-same-origin
+                            allow-forms allow-popups-to-escape-sandbox allow-top-navigation" name="gpay-button">
+                            </iframe>
+                        </div>
+
                     </div>
 
                     <div class="row gy-3 d-none paymentMethod" id="paypal-fields">

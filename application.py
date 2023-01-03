@@ -15,29 +15,31 @@ def index():
 # submit to gateway
 @application.route("/submit", methods=["POST"])
 def submit():
-    print(request.form)
+    print(request.is_json)
+    content = request.get_json()
+    print(content)
     headers = {"Content-Type": "application/json"}
     url = "https://x1.cardknox.com/gatewayjson"
     payload = json.dumps({
-        "xcommand": request.form.get("command"),
+        "xcommand": content["command"],
         "xsoftwareversion": "1.0.0",
         "xversion": "5.0.0",
         "xsoftwarename": "Testing Pane",
-        "xkey": request.form.get("api-key"),
-        "xamount": request.form.get("amount"),
-        "xcardnum": request.form.get("cc-number"),
-        "xcvv": request.form.get("cc-cvv"),
-        "xexp": request.form.get("cc-expiration"),
-        "xBillFirstName": request.form.get("firstname"),
-        "xBillLastName": request.form.get("lastname"),
-        "xBillStreet": request.form.get("address"),
-        "xBillCountry": request.form.get("country"),
-        "xBillState": request.form.get("state"),
-        "xBillCity": request.form.get("city"),
-        "xBillZip": request.form.get("zip"),
-        "xEmail": request.form.get("email"),
-        "xBillMobile": request.form.get("phone"),
-        "xallowduplicate": "true" if request.form.get("allow-duplicate") == "on" else "false",
+        "xkey": content["api-key"],
+        "xamount": content["amount"],
+        "xcardnum": content["cc-number"],
+        "xcvv": content["cc-cvv"],
+        "xexp": content["cc-expiration"],
+        "xBillFirstName": content["firstname"],
+        "xBillLastName": content["lastname"],
+        "xBillStreet": content["address"],
+        "xBillCountry": content["country"],
+        "xBillState": content["state"],
+        "xBillCity": content["city"],
+        "xBillZip": content["zip"],
+        "xEmail": content["email"],
+        "xBillMobile": content["phone"],
+        "xallowduplicate": "true" if content["allow-duplicate"] == "on" else "false",
     })
     print(payload)
     apiCall = requests.request("POST", url, headers = headers, data = payload)
@@ -108,4 +110,4 @@ def googlepay():
 # parameters to run with
 if __name__ == "__main__":
     # set port to 80 in production
-    application.run(debug=False, host="0.0.0.0", port=8080)
+    application.run(debug=False, host="0.0.0.0", port=8080, ssl_context="adhoc")
