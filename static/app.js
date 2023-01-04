@@ -37,9 +37,21 @@ function time() {
     return timeString;
 }
 
+//button to open refnum
+function refCheck(message, refnumNum, messages) {
+    if (+refnumNum >= 666298174) {
+        const refString = `<button type="button" class="btn btn-light btn-sm ref-button">${message}</button>`
+        return refString
+    }
+    else {
+        return message
+    }
+}
+
 //add new toasts
 function displayToast(messages = test, type = "Test") {
-    const message = messages.xStatus + " " + messages.xRefNum
+    let message = messages.xStatus + " " + messages.xRefNum
+    const refnumNum = messages.xRefNum
     console.log(message, type);
     const toastElement = document.createElement('div');
     toastElement.setAttribute('class', 'toast fade');
@@ -56,11 +68,17 @@ function displayToast(messages = test, type = "Test") {
             </button>
             </div>
             <div class="toast-body">
-            ${message}
+            ${refCheck(message, +refnumNum, messages)}
             </div>
         `;
     const toastStack = document.querySelector('#toast-stack');
     toastStack.prepend(toastElement);
+    const refButton = document.querySelector('.ref-button');
+    if (refButton) {
+        refButton.addEventListener('click', function () {
+            window.open(`https://x1.cardknox.com/report/rptpwd/${refnumNum}`, '_blank');
+        });
+    }
     toastElement.classList.add('show');
     const closeButton = toastElement.querySelector('.btn-close');
     closeButton.addEventListener('click', function () {
