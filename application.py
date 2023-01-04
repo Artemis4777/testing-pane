@@ -77,11 +77,14 @@ def verify():
     return json.dumps({"Status": 200, "Response": response})
 
 
+#google pay
 @application.route("/googlepay", methods = ["POST"])
 def googlepay():
     print(request.is_json)
-    content = request.get_json()
-    print(content)
+    payloads = request.get_json()
+    print(payloads)
+    content = payloads["payload"]
+    gpContent = payloads["paymentResponse"]
     headers = {"Content-Type": "application/json"}
     url = "https://x1.cardknox.com/gatewayjson"
     payload = json.dumps({
@@ -89,16 +92,16 @@ def googlepay():
         "xsoftwareversion": "1.0.0",
         "xversion": "5.0.0",
         "xsoftwarename": "Testing Pane",
+        "xDigitalWalletType": "GooglePay",
         "xkey": content["api-key"],
         "xamount": content["amount"],
-        "xcardnum": content["token"],
-        "xBillFirstName": content["firstname"],
-        "xBillLastName": content["lastname"],
-        "xBillStreet": content["address"],
-        "xBillCountry": content["country"],
-        "xBillState": content["state"],
-        "xBillCity": content["city"],
-        "xBillZip": content["zip"],
+        "xcardnum": payloads["encodedToken"],
+        "xName": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["name"],
+        "xBillStreet": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["address1"],
+        "xBillCountry": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["countryCode"],
+        "xBillState": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["administrativeArea"],
+        "xBillCity": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["locality"],
+        "xBillZip": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["postalCode"],
         "xallowduplicate": "true" if content["allow-duplicate"] == "on" else "false",
     })
     apiCall = requests.request("POST", url, headers = headers, data = payload)
