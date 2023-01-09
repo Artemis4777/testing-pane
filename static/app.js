@@ -28,7 +28,6 @@ function billingShow() {
     };
 };
 billing.addEventListener("change", billingShow);
-billingShow();
 
 //get time
 function time() {
@@ -103,24 +102,32 @@ function formToJSON(form) {
 
 
 // payment type event listeners
-const paymentType = document.querySelectorAll('input[name="paymentMethod"]');
+const gpayBtnDiv = document.getElementById('gpay-button-div');
+const submitBtnDiv = document.getElementById('submit-button-div');
+const paymentTypes = document.querySelectorAll('input[name="paymentMethod"]');
 const paymentTypeFieldSets = document.querySelectorAll('.paymentMethod');
-paymentType.forEach(paymentType => {
-    paymentType.addEventListener('change', function (event) {
+paymentTypes.forEach(paymentType => {
+    paymentType.addEventListener('click', function (event) {
         const selectedMethod = event.target.id;
         displayToast({ "xStatus": selectedMethod, "xRefNum": " " }, "New Method");
         paymentTypeFieldSets.forEach(paymentTypeFieldSet => {
             paymentTypeFieldSet.classList.add('d-none')
         });
         const method = document.querySelector(`#${selectedMethod}-fields`);
+        console.log(method)
         method.classList.remove('d-none');
+        gpayBtnDiv.classList.add('d-none')
         if (selectedMethod === "gpay") {
+            gpayBtnDiv.classList.remove('d-none')
             ckGooglePay.enableGooglePay({ amountField: amount });
-            submitBtn.classList.add('d-none');
-        }
-        else {
-            submitBtn.classList.remove('d-none');
+            submitBtnDiv.classList.add('d-none');
         };
+        if (selectedMethod === "paypal") {
+            submitBtnDiv.classList.remove('d-none');
+        };
+        if (selectedMethod === "credit") {
+            submitBtnDiv.classList.remove('d-none');
+        }
     });
 });
 
@@ -231,7 +238,6 @@ function options3ds() {
     };
 };
 threeD.addEventListener("change", options3ds);
-options3ds();
 
 
 //googlepay object
@@ -298,3 +304,9 @@ function processGP(paymentResponse) {
             });
     })
 }
+
+billingShow();
+let radioButton = document.getElementById("credit");
+radioButton.checked = true;
+radioButton.dispatchEvent(new Event("click"));
+options3ds();

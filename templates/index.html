@@ -32,7 +32,7 @@
 
                     <div class="row g-3">
                         <h4 class="mb-3">Configuration Options</h4>
-                        
+
                         <div class="form-check form-switch">
                             <input type="checkbox" class="form-check-input" id="billing" name="billing">
                             <label class="form-check-label">Show Billing Fields</label>
@@ -256,8 +256,7 @@
 
                     <div class="my-3">
                         <div class="form-check">
-                            <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked
-                                required>
+                            <input id="credit" name="paymentMethod" type="radio" class="form-check-input" required>
                             <label class="form-check-label" for="credit">Credit card</label>
                         </div>
                         <div class="form-check">
@@ -266,11 +265,11 @@
                         </div>
                         <div class="form-check">
                             <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
-                            <label class="form-check-label" for="paypal">Placehoder</label>
+                            <label class="form-check-label" for="paypal">Placeholder</label>
                         </div>
                     </div>
 
-                    <div class="row gy-3 paymentMethod" id="credit-fields">
+                    <div class="row gy-3 paymentMethod d-none" id="credit-fields">
 
                         <div class="col-md-6">
                             <label for="card-number" class="form-label">Credit card number</label>
@@ -311,12 +310,6 @@
                                 name="merchantName">
                         </div>
 
-                        <div class="col-md-12">
-                            <iframe id="igp" class="gp form-control bg-light" data-ifields-id="igp" data-ifields-oninit="initGP"
-                                src=https://cdn.cardknox.com/ifields/2.14.2211.1101/igp.htm allowpaymentrequest sandbox="allow-popups allow-modals allow-scripts allow-same-origin
-                            allow-forms allow-popups-to-escape-sandbox allow-top-navigation" name="gpay-button">
-                            </iframe>
-                        </div>
 
                     </div>
 
@@ -326,13 +319,28 @@
 
                     <hr class="my-4">
 
-                    <button id="paymentbutton" class="w-100 btn btn-primary btn-lg" type="submit">Continue to
-                        checkout</button>
-                    <div>
-                        <input data-ifields-id="card-number-token" type="hidden" name="cc-number" id="cc-number">
-                        <input data-ifields-id="cvv-token" type="hidden" name="cc-cvv" id="cc-cvv">
-                        <label id="iFields-Status"></label>
-                        <label data-ifields-id="card-data-error" style="color: red;"></label>
+                    <div class="row" id="submit-buttons">
+
+                        <div class="col-md-12" id="gpay-button-div">
+                            <iframe id="igp" class="gp form-control bg-light" data-ifields-id="igp"
+                                data-ifields-oninit="initGP" src=https://cdn.cardknox.com/ifields/2.14.2211.1101/igp.htm
+                                allowpaymentrequest sandbox="allow-popups allow-modals allow-scripts allow-same-origin
+                        allow-forms allow-popups-to-escape-sandbox allow-top-navigation" name="gpay-button">
+                            </iframe>
+                        </div>
+
+                        <div class="col-md-12" id="submit-button-div">
+                            <button id="paymentbutton" class="w-100 btn btn-primary btn-lg" type="submit">Continue to
+                                checkout</button>
+                            <div>
+                                <input data-ifields-id="card-number-token" type="hidden" name="cc-number"
+                                    id="cc-number">
+                                <input data-ifields-id="cvv-token" type="hidden" name="cc-cvv" id="cc-cvv">
+                                <label id="iFields-Status"></label>
+                                <label data-ifields-id="card-data-error" style="color: red;"></label>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </form>
