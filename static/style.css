@@ -33,3 +33,18 @@
     background: #0453c9;
 }
 
+.toast-header {
+	background-color: rgba(234, 234, 234, 0.85);
+}
+
+#igp {
+    border: 0 solid black;
+    margin-bottom: 5px;
+}
+
+iframe.gp {
+    display: block;
+    border: 0;
+    max-height: 60px;
+    margin: 0px;
+}

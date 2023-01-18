@@ -1,9 +1,7 @@
 //JavaScript functions for main page
-//
 
 
-
-//all variables for this file
+//universal variables for this file
 const duplicate = document.getElementById("allow-duplicate");
 const xkey = document.getElementById("api-key");
 const amount = document.getElementById("amount");
@@ -16,8 +14,151 @@ const enableFriction = document.getElementById('friction-switch');
 const billing = document.getElementById('billing');
 const billInfo = document.getElementById('billing info');
 const form = document.getElementById('paymentform');
-const test = {"xStatus": "Default", "xRefNum": "Value"};
+const test = { "xStatus": "Default", "xRefNum": "Value" };
 const toastTest = document.getElementById("toast-test");
+
+//hide or show billing
+function billingShow() {
+    if (billing.checked) {
+        console.log("showing billing fields")
+        billInfo.classList.remove("d-none");
+    }
+    else {
+        billInfo.classList.add("d-none");
+    };
+};
+billing.addEventListener("change", billingShow);
+
+//get time
+function time() {
+    const currentTime = new Date();
+    const timeString = currentTime.toLocaleTimeString();
+    return timeString;
+}
+
+//button to open refnum
+function refCheck(message, refnumNum, messages) {
+    if (+refnumNum >= 666298174) {
+        const refString = `<button type="button" class="btn btn-light btn-sm ref-button">${message}</button>`
+        return refString
+    }
+    else {
+        return message
+    }
+}
+
+//add new toasts
+function displayToast(messages = test, type = "Test") {
+    let message = messages.xStatus + " " + messages.xRefNum
+    const refnumNum = messages.xRefNum
+    console.log(message, type);
+    const toastElement = document.createElement('div');
+    toastElement.setAttribute('class', 'toast fade');
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+    toastElement.innerHTML = `
+            <div class="toast-header">
+            <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+            <rect width="100%" height="100%" fill="#007aff"></rect></svg>
+            <strong class="me-auto">${time()}</strong>
+            <small class="text-muted">${type}</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
+            </button>
+            </div>
+            <div class="toast-body">
+            ${refCheck(message, +refnumNum, messages)}
+            </div>
+        `;
+    const toastStack = document.querySelector('#toast-stack');
+    toastStack.prepend(toastElement);
+    const refButton = document.querySelector('.ref-button');
+    if (refButton) {
+        refButton.addEventListener('click', function () {
+            window.open(`https://x1.cardknox.com/report/rptpwd/${refnumNum}`, '_blank');
+        });
+    }
+    toastElement.classList.add('show');
+    const closeButton = toastElement.querySelector('.btn-close');
+    closeButton.addEventListener('click', function () {
+        toastElement.classList.remove('show');
+    });
+};
+
+toastTest.addEventListener("click", function (event) {
+    event.preventDefault();
+    displayToast(test, "Log Test");
+})
+
+//convert form to json
+function formToJSON(form) {
+    let formData = new FormData(form)
+    let object = {};
+    formData.forEach((value, key) => {
+        object[key] = value;
+    });
+    return object;
+}
+
+
+// payment type event listeners
+const gpayBtnDiv = document.getElementById('gpay-button-div');
+const submitBtnDiv = document.getElementById('submit-button-div');
+const paymentTypes = document.querySelectorAll('input[name="paymentMethod"]');
+const paymentTypeFieldSets = document.querySelectorAll('.paymentMethod');
+paymentTypes.forEach(paymentType => {
+    paymentType.addEventListener('click', function (event) {
+        const selectedMethod = event.target.id;
+        displayToast({ "xStatus": selectedMethod, "xRefNum": " " }, "New Method");
+        paymentTypeFieldSets.forEach(paymentTypeFieldSet => {
+            paymentTypeFieldSet.classList.add('d-none')
+        });
+        const method = document.querySelector(`#${selectedMethod}-fields`);
+        console.log(method)
+        method.classList.remove('d-none');
+        gpayBtnDiv.classList.add('d-none')
+        if (selectedMethod === "gpay") {
+            gpayBtnDiv.classList.remove('d-none')
+            ckGooglePay.enableGooglePay({ amountField: amount });
+            submitBtnDiv.classList.add('d-none');
+        };
+        if (selectedMethod === "paypal") {
+            submitBtnDiv.classList.remove('d-none');
+        };
+        if (selectedMethod === "credit") {
+            submitBtnDiv.classList.remove('d-none');
+        }
+    });
+});
+
+
+//base api call
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    let ifieldsKey = document.getElementById('ifields-key').value;
+    setAccount(ifieldsKey, "NB Everything", "1.0");
+    threedstuff();
+    submitBtn.disabled = true;
+    getTokens(
+        function () {
+            let payload = formToJSON(form)
+            fetch("/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())  // Parse the response as JSON
+                .then(data => {
+                    displayToast(data.Response, "Sale");
+                    handleVerify(data)
+                })
+        },
+        function () {
+            submitBtn.disabled = false;
+        },
+        30000,
+    );
+});
 
 //setting iFields styles
 let styles = {
@@ -44,34 +185,6 @@ function threedstuff() {
         enable3DS(enviro)
     };
 };
-
-//base api call
-form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    let ifieldsKey = document.getElementById('ifields-key').value;
-    setAccount(ifieldsKey, "NB Everything", "1.0");
-    threedstuff();
-    submitBtn.disabled = true;
-    getTokens(
-        function () {
-            const formData = new FormData(form);
-            console.log(formData)
-            fetch("/submit", {
-                method: "POST",
-                body: formData
-            })
-                .then(response => response.json())  // Parse the response as JSON
-                .then(data => {
-                    displayToast(data.Response, "Sale");
-                    handleVerify(data)
-                })
-        },
-        function () {
-            submitBtn.disabled = false;
-        },
-        30000,
-    );
-});
 
 //pass to 3ds
 function handleVerify(response) {
@@ -112,19 +225,6 @@ function handle3DSResults(actionCode, xCavv, xEciFlag, xRefNum, xAuthenticateSta
         });
 };
 
-//hide or show billing
-function billingShow() {
-    if (billing.checked) {
-        console.log("showing")
-        billInfo.classList.remove("d-none");
-    }
-    else {
-        billInfo.classList.add("d-none");
-    };
-};
-billing.addEventListener("change", billingShow);
-billingShow();
-
 //configure 3DS
 function options3ds() {
     if (threeD.checked) {
@@ -138,43 +238,75 @@ function options3ds() {
     };
 };
 threeD.addEventListener("change", options3ds);
-options3ds();
 
 
-
-
-//add new toasts
-function displayToast(messages = test, type = "Test") {
-    const message = messages.xStatus + " " + messages.xRefNum
-    console.log(message, type);
-    const toastElement = document.createElement('div');
-    toastElement.setAttribute('class', 'toast fade');
-    toastElement.setAttribute('role', 'alert');
-    toastElement.setAttribute('aria-live', 'assertive');
-    toastElement.setAttribute('aria-atomic', 'true');
-    toastElement.innerHTML = `
-            <div class="toast-header">
-            <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
-            <rect width="100%" height="100%" fill="#007aff"></rect></svg>
-            <strong class="me-auto">Result</strong>
-            <small class="text-muted">${type}</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
-            </button>
-            </div>
-            <div class="toast-body">
-            ${message}
-            </div>
-        `;
-    const toastStack = document.querySelector('#toast-stack');
-    toastStack.prepend(toastElement);
-    toastElement.classList.add('show');
-    const closeButton = toastElement.querySelector('.btn-close');
-    closeButton.addEventListener('click', function () {
-        toastElement.classList.remove('show');
-    });
+//googlepay object
+const merchantName = document.getElementById('merchantName');
+const gpRequest = {
+    merchantInfo: {
+        merchantName: merchantName.value
+    },
+    buttonOptions: {
+        buttonSizeMode: GPButtonSizeMode.fill
+    },
+    billingParams: {
+        billingAddressRequired: true,
+        billingAddressFormat: GPBillingAddressFormat.full
+    },
+    onGetTransactionInfo: function () { return { totalPriceStatus: "FINAL", currencyCode: "USD", totalPrice: amount.value } },
+    onProcessPayment: function (paymentResponse) { return processGP(paymentResponse) },
+    onPaymentCanceled: function () { displayToast({ "xStatus": "Canceled", "xRefNum": "" }, "Google Pay") }
 };
+//initiates googlepay
+function initGP() {
+    console.log("googlepay init")
+    return {
+        merchantInfo: gpRequest.merchantInfo,
+        buttonOptions: gpRequest.buttonOptions,
+        onGetTransactionInfo: "gpRequest.onGetTransactionInfo",
+        billingParameters: gpRequest.billingParams,
+        onProcessPayment: "gpRequest.onProcessPayment",
+        onPaymentCanceled: "gpRequest.onPaymentCanceled"
+    };
+}
+//checks if test or production for googlepay
+function gpayEnv() {
+    const gpenv = document.getElementById('gpay-environment').value;
+    if (gpenv === "production") {
+        return "PRODUCTION";
+    }
+    else {
+        return "TEST";
+    };
+};
+//sends token and fields to server
+function processGP(paymentResponse) {
+    return new Promise(function (resolve, reject) {
+        paymentToken = paymentResponse.paymentData.paymentMethodData.tokenizationData.token;
+        encodedToken = window.btoa(paymentToken)
+        let payload = formToJSON(form)
+        console.log(JSON.stringify({ payload, paymentResponse, encodedToken }))
+        fetch("/googlepay", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ payload, paymentResponse, encodedToken })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.Response.xStatus) {
+                    if (data.Response.xStatus === "Approved") {
+                        resolve(data)
+                    }
+                    else { reject(data) }
+                }
+                else { reject(data) }
+                displayToast(data.Response, "Google Pay");
+            });
+    })
+}
 
-toastTest.addEventListener("click", function (event) {
-    event.preventDefault();
-    displayToast(test, "Log Test");
-})
+billingShow();
+let radioButton = document.getElementById("credit");
+radioButton.checked = true;
+radioButton.dispatchEvent(new Event("click"));
+options3ds();
