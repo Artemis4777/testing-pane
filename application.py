@@ -20,6 +20,12 @@ def submit():
     print(content)
     headers = {"Content-Type": "application/json"}
     url = "https://x1.cardknox.com/gatewayjson"
+    dupe = False
+    try:
+        if content["allow-duplicate"] == "on":
+            dupe = True
+    except:
+        pass
     payload = json.dumps({
         "xcommand": content["command"],
         "xsoftwareversion": "1.0.0",
@@ -39,7 +45,7 @@ def submit():
         "xBillZip": content["zip"],
         "xEmail": content["email"],
         "xBillMobile": content["phone"],
-        "xallowduplicate": "true" if content["allow-duplicate"] == "on" else "false",
+        "xallowduplicate": dupe,
     })
     print(payload)
     apiCall = requests.request("POST", url, headers = headers, data = payload)
