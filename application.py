@@ -125,4 +125,4 @@ def googlepay():
 # parameters to run with
 if __name__ == "__main__":
     # set port to 80 in production
-    application.run(debug=False, host="0.0.0.0", port=8080, ssl_context="adhoc")
+    application.run(debug=False, host="0.0.0.0", port=80)
