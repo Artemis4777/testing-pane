@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import requests
 import json
 
@@ -11,6 +11,11 @@ application = Flask(__name__)
 def index():
     return render_template(["index.html", "app.js", "style.css"])
 
+
+#apple pay
+@application.route("/.well-known/apple-developer-merchantid-domain-association")
+def applemid():
+    return send_from_directory("/.well-known/", "apple-developer-merchantid-domain-association")
 
 # submit to gateway
 @application.route("/submit", methods=["POST"])
