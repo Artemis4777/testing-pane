@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory
 import requests
 import json
+import logging
 
 # declare app
 application = Flask(__name__)
@@ -12,17 +13,17 @@ def index():
     return render_template(["index.html", "app.js", "style.css"])
 
 
-#apple pay
+#apple pay domain verification
 @application.route("/.well-known/apple-developer-merchantid-domain-association")
 def applemid():
-    return send_from_directory("/.well-known/", "apple-developer-merchantid-domain-association")
+    return send_from_directory(application.static_folder, "apple-developer-merchantid-domain-association")
 
 # submit to gateway
 @application.route("/submit", methods=["POST"])
 def submit():
-    print(request.is_json)
+    logging.info(request.is_json)
     content = request.get_json()
-    print(content)
+    logging.info(content)
     headers = {"Content-Type": "application/json"}
     url = "https://x1.cardknox.com/gatewayjson"
     dupe = False
@@ -55,7 +56,7 @@ def submit():
     print(payload)
     apiCall = requests.request("POST", url, headers = headers, data = payload)
     response = apiCall.json()
-    print(response["xStatus"], response["xRefNum"])
+    logging.info(response["xStatus"], response["xRefNum"])
     return json.dumps({"Status": 200, "Response": response})
 
 
@@ -124,6 +125,44 @@ def googlepay():
     apiCall = requests.request("POST", url, headers = headers, data = payload)
     response = apiCall.json()
     print(response["xStatus"], response["xRefNum"])
+    return json.dumps({"Status": 200, "Response": response})
+
+
+@application.route("/applepay", methods = ["POST"])
+def applepay():
+    logging.info(request.is_json)
+    payloads = request.get_json()
+    logging.info(payloads)
+    content = payloads["payload"]
+    apContent = payloads["paymentResponse"]
+    headers = {"Content-Type": "application/json"}
+    url = "https://x1.cardknox.com/gatewayjson"
+    dupe = False
+    try:
+        if content["allow-duplicate"] == "on":
+            dupe = True
+    except:
+        pass
+    payload = json.dumps({
+        "xcommand": content["command"],
+        "xsoftwareversion": "1.0.0",
+        "xversion": "5.0.0",
+        "xsoftwarename": "Testing Pane",
+        "xDigitalWalletType": "ApplePay",
+        "xkey": content["api-key"],
+        "xamount": payloads["finalPrice"],
+        "xcardnum": payloads["encodedToken"],
+        "xName": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["name"],
+        "xBillStreet": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["address1"],
+        "xBillCountry": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["countryCode"],
+        "xBillState": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["administrativeArea"],
+        "xBillCity": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["locality"],
+        "xBillZip": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["postalCode"],
+        "xallowduplicate": dupe,
+    })
+    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    response = apiCall.json()
+    logging.info(response["xStatus"], response["xRefNum"])
     return json.dumps({"Status": 200, "Response": response})
 
 

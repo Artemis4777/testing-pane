@@ -315,7 +315,10 @@
 
                     <div class="row gy-3 d-none paymentMethod" id="apay-fields">
 
-                        <div id="ap-container">
+                        <div class="col-md-12">
+                            <label for="merchantName" class="form-label">Merchant Name</label>
+                            <input type="text" class="form-control" id="merchantName" value="Testing Pane"
+                                name="merchantName">
                         </div>
 
                     </div>
@@ -324,11 +327,16 @@
 
                     <div class="row" id="submit-buttons">
 
+                        <div class="col-md-12" id="apay-button-div">
+                            <div id="ap-container" class="ap hidden">
+                            </div>
+                        </div>
+
                         <div class="col-md-12" id="gpay-button-div">
                             <iframe id="igp" class="gp form-control bg-light" data-ifields-id="igp"
                                 data-ifields-oninit="initGP" src=https://cdn.cardknox.com/ifields/2.14.2211.1101/igp.htm
                                 allowpaymentrequest sandbox="allow-popups allow-modals allow-scripts allow-same-origin
-                        allow-forms allow-popups-to-escape-sandbox allow-top-navigation" name="gpay-button">
+                                    allow-forms allow-popups-to-escape-sandbox allow-top-navigation" name="gpay-button">
                             </iframe>
                         </div>
 
