@@ -2,6 +2,7 @@
 
 
 //universal variables for this file
+const xcommand = document.getElementById("command");
 const duplicate = document.getElementById("allow-duplicate");
 let xkey = document.getElementById("api-key");
 let amount = document.getElementById("amount");
@@ -16,6 +17,7 @@ const billInfo = document.getElementById('billing info');
 const form = document.getElementById('paymentform');
 const test = { "xStatus": "Default", "xRefNum": "Value" };
 const toastTest = document.getElementById("toast-test");
+const bbposButton = document.getElementById("bbpos-button");
 
 //hide or show billing
 function billingShow() {
@@ -102,6 +104,7 @@ function formToJSON(form) {
 
 
 // payment type event listeners
+const bbposBtnDiv = document.getElementById('bbpos-button-div');
 const apayBtnDiv = document.getElementById('apay-button-div');
 const gpayBtnDiv = document.getElementById('gpay-button-div');
 const submitBtnDiv = document.getElementById('submit-button-div');
@@ -116,9 +119,14 @@ paymentTypes.forEach(paymentType => {
         });
         const method = document.querySelector(`#${selectedMethod}-fields`);
         console.log(method)
-        method.classList.remove('d-none');
+        //method.classList.remove('d-none');
         gpayBtnDiv.classList.add('d-none')
         apayBtnDiv.classList.add('d-none')
+        bbposBtnDiv.classList.add('d-none')
+        if (selectedMethod === "bbpos") {
+            bbposBtnDiv.classList.remove('d-none')
+            submitBtnDiv.classList.add('d-none');
+        };
         if (selectedMethod === "gpay") {
             gpayBtnDiv.classList.remove('d-none')
             submitBtnDiv.classList.add('d-none');
@@ -417,6 +425,39 @@ function processAP(paymentResponse, finalPrice) {
             });
     })
 };
+
+//bbpos payment
+let ipAddress = document.getElementById("deviceIpAddress")
+let ipPort = document.getElementById("deviceIpPort")
+let deviceName = document.getElementById("deviceName")
+let deviceTimeout = document.getElementById("deviceTimeout")
+let enabledeviceinsertswipetap = document.getElementById("enableDeviceInsertSwipeTap")
+bbposButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    payload = {
+        "xcommand": xcommand.value,
+        "xsoftwareversion": "1.0.0",
+        "xversion": "5.0.0",
+        "xsoftwarename": "Testing Pane",
+        "xkey": xkey.value,
+        "xamount": amount.value,
+        "xdeviceipport": ipPort.value,
+        "xdeviceipaddress": ipAddress.value,
+        "enabledeviceinsertswipetap": enabledeviceinsertswipetap.value,
+        "xdevicename": deviceName.value,
+        "xdevicetimeout": deviceTimeout.value,
+    }
+    let url = "https://localemv.com:8889"
+    body = new URLSearchParams(payload).toString();
+    fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+    .then(response => console.log(response))
+})
 
 
 //Ending of file

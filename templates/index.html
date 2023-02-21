@@ -267,6 +267,10 @@
                             <input id="apay" name="paymentMethod" type="radio" class="form-check-input" required>
                             <label class="form-check-label" for="apay">Apple Pay</label>
                         </div>
+                        <div class="form-check">
+                            <input id="bbpos" name="paymentMethod" type="radio" class="form-check-input" required>
+                            <label class="form-check-label" for="bbpos">BBPOS</label>
+                        </div>
                     </div>
 
                     <div class="row gy-3 paymentMethod d-none" id="credit-fields">
@@ -323,9 +327,48 @@
 
                     </div>
 
+                    <div class="row gy-3 d-none paymentMethod" id="bbpos-fields">
+
+                        <div class="col-md-12">
+                            <label for="deviceName" class="form-label">Device Name</label>
+                            <input type="text" class="form-control" id="deviceName"
+                                name="deviceName">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="deviceIp" class="form-label">Device IP Address</label>
+                            <input type="text" class="form-control" id="deviceIp"
+                                name="deviceIp">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="deviceIpPort" class="form-label">Device IP Port</label>
+                            <input type="text" class="form-control" id="deviceIpPort"
+                                name="deviceIpPort">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="enableDeviceInsertSwipeTap" class="form-label">Enable Insert Swipe Tap</label>
+                            <input type="text" class="form-control" id="enableDeviceInsertSwipeTap" value="True"
+                                name="enableDeviceInsertSwipeTap">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="deviceTimeout" class="form-label">Device Timeout</label>
+                            <input type="text" class="form-control" id="deviceTimeout" value="12000"
+                                name="deviceTimeout">
+                        </div>
+
+                    </div>
+
                     <hr class="my-4">
 
                     <div class="row" id="submit-buttons">
+
+                        <div class="col-md-12" id="bbpos-button-div">
+                            <button id="bbpos-button" class="w-100 btn btn-primary btn-lg" type="button">Continue to
+                                checkout</button>
+                        </div>
 
                         <div class="col-md-12" id="apay-button-div">
                             <div id="ap-container" class="ap hidden">
