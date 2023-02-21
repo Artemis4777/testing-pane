@@ -119,7 +119,7 @@ paymentTypes.forEach(paymentType => {
         });
         const method = document.querySelector(`#${selectedMethod}-fields`);
         console.log(method)
-        //method.classList.remove('d-none');
+        method.classList.remove('d-none');
         gpayBtnDiv.classList.add('d-none')
         apayBtnDiv.classList.add('d-none')
         bbposBtnDiv.classList.add('d-none')
@@ -427,6 +427,7 @@ function processAP(paymentResponse, finalPrice) {
 };
 
 //bbpos payment
+let bbposPort = document.getElementById("bbposPort")
 let ipAddress = document.getElementById("deviceIpAddress")
 let ipPort = document.getElementById("deviceIpPort")
 let deviceName = document.getElementById("deviceName")
@@ -446,17 +447,23 @@ bbposButton.addEventListener("click", function (event) {
         "enabledeviceinsertswipetap": enabledeviceinsertswipetap.value,
         "xdevicename": deviceName.value,
         "xdevicetimeout": deviceTimeout.value,
+        "xallowduplicate": (duplicate.value === "on")
     }
-    let url = "https://localemv.com:8889"
+    let url = "https://localemv.com:" + bbposPort.value
     body = new URLSearchParams(payload).toString();
+    console.log(body)
     fetch(url, {
         method: 'POST',
         body: body,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    })
-    .then(response => console.log(response))
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayToast(data, "BBPOS")
+            console.log(data)
+        })
 })
 
 
