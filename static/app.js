@@ -39,8 +39,8 @@ function time() {
 }
 
 //button to open refnum
-function refCheck(message, refnumNum, messages) {
-    if (+refnumNum >= 666298174) {
+function refCheck(message, refnumNum) {
+    if (Number(refnumNum) >= 666298174) {
         const refString = `<button type="button" class="btn btn-light btn-sm ref-button">${message}</button>`
         return refString
     }
@@ -104,46 +104,39 @@ function formToJSON(form) {
 
 
 // payment type event listeners
-const bbposBtnDiv = document.getElementById('bbpos-button-div');
-const apayBtnDiv = document.getElementById('apay-button-div');
-const gpayBtnDiv = document.getElementById('gpay-button-div');
-const submitBtnDiv = document.getElementById('submit-button-div');
 const paymentTypes = document.querySelectorAll('input[name="paymentMethod"]');
 const paymentTypeFieldSets = document.querySelectorAll('.paymentMethod');
+const submitButtons = document.querySelectorAll('.submit-button');
 paymentTypes.forEach(paymentType => {
     paymentType.addEventListener('click', function (event) {
         const selectedMethod = event.target.id;
-        displayToast({ "xStatus": selectedMethod, "xRefNum": " " }, "New Method");
-        paymentTypeFieldSets.forEach(paymentTypeFieldSet => {
-            paymentTypeFieldSet.classList.add('d-none')
-        });
-        const method = document.querySelector(`#${selectedMethod}-fields`);
-        console.log(method)
-        method.classList.remove('d-none');
-        gpayBtnDiv.classList.add('d-none')
-        apayBtnDiv.classList.add('d-none')
-        bbposBtnDiv.classList.add('d-none')
-        if (selectedMethod === "bbpos") {
-            bbposBtnDiv.classList.remove('d-none')
-            submitBtnDiv.classList.add('d-none');
-        };
-        if (selectedMethod === "gpay") {
-            gpayBtnDiv.classList.remove('d-none')
-            submitBtnDiv.classList.add('d-none');
-            ckGooglePay.enableGooglePay({ amountField: "amount" });
-        };
-        if (selectedMethod === "apay") {
-            submitBtnDiv.classList.add('d-none');
-            ckApplePay.enableApplePay({
-                initFunction: "initAP",
-                amountField: "amount"
-            });
-        };
-        if (selectedMethod === "credit") {
-            submitBtnDiv.classList.remove('d-none');
-        }
+        paymentMethods(selectedMethod)
     });
 });
+//hide and show payment type buttons and fields
+function paymentMethods(selectedMethod) {
+    displayToast({ "xStatus": selectedMethod, "xRefNum": " " }, "New Method");
+    paymentTypeFieldSets.forEach(paymentTypeFieldSet => {
+        paymentTypeFieldSet.classList.add('d-none')
+    });
+    submitButtons.forEach(submitButton => {
+        submitButton.classList.add('d-none')
+    });
+    const methodFields = document.querySelector(`#${selectedMethod}-fields`);
+    const methodButton = document.querySelector(`#${selectedMethod}-button-div`);
+    console.log(methodFields)
+    methodFields.classList.remove('d-none');
+    methodButton.classList.remove('d-none');
+    if (selectedMethod === "gpay") {
+        ckGooglePay.enableGooglePay({ amountField: "amount" });
+    };
+    if (selectedMethod === "apay") {
+        ckApplePay.enableApplePay({
+            initFunction: "initAP",
+            amountField: "amount"
+        });
+    };
+}
 
 
 //base api call
@@ -328,13 +321,29 @@ const apRequest = {
         buttonColor: APButtonColor.black,
         buttonType: APButtonType.pay
     },
-    handleAPError: function(err) {
-        displayToast(err, "Google Pay")
-    },
+    handleAPError: function(err) { displayToast(err, "Apple Pay") },
     onPaymentComplete: function(paymentComplete) {
         let resp = JSON.parse(paymentComplete.response)
-        displayToast(resp, "Google Pay")
-    }
+        displayToast(resp, "Apple Pay")
+    },
+    totalAmount: 0,
+    apButtonLoaded: function(resp) { console.log(resp) },
+    getShippingMethods: function() { return [{ label: 'Free Shipping', amount: '0.00', identifier: 'free', detail: 'Delivers in five light years' }]; },
+    shippingContactSelected: function(shippingContact) { console.log("shippingContact", JSON.stringify(shippingContact)); },
+    shippingMethodSelected: function (ShippingMethod) { console.log(ShippingMethod) },
+    paymentMethodSelected: function (PaymentMethod) { console.log(PaymentMethod) },
+    beforeProcessPayment: function () {
+        return new Promise(function (resolve, reject) {
+            try {
+                // optional validation place
+                console.log("...");
+                resolve(iStatus.success);
+            } catch {
+                reject(err)
+            }
+        });
+    },
+    cancel: function () { displayToast({ "xStatus": "Canceled", "xRefNum": "" }, "Apple Pay") }
 }
 //apple pay init
 function initAP() {
@@ -342,17 +351,17 @@ function initAP() {
     return {
         buttonOptions: apRequest.buttonOptions,
         merchantIdentifier: "merchant.cardknox.com",
-        onAPButtonLoaded: function () { apayBtnDiv.classList.remove('d-none') },
+        onAPButtonLoaded: "apRequest.apButtonLoaded",
         onGetTransactionInfo: "getTransactionInfo",
-        onGetShippingMethods: function () { return [{label: 'Free Shipping',amount: '0.00',identifier: 'free'}]; },
-        onShippingContactSelected: function (shippingContact) { console.log("shippingContact", JSON.stringify(shippingContact)); },
-        onShippingMethodSelected: function (ShippingMethod) { console.log(ShippingMethod) },
-        onPaymentMethodSelected: function (PaymentMethod) { console.log(PaymentMethod) },
-        onBeforeProcessPayment: function () { console.log("..."); },
+        onGetShippingMethods: "apRequest.getShippingMethods",
+        onShippingContactSelected: "apRequest.shippingContactSelected",
+        onShippingMethodSelected: "apRequest.shippingMethodSelected",
+        onPaymentMethodSelected: "apRequest.paymentMethodSelected",
+        onBeforeProcessPayment: "apRequest.beforeProcessPayment",
         onValidateMerchant: "validateMerchant",
-        onPaymentAuthorize: function (paymentResponse) { return processAP(paymentResponse, finalPrice) },
+        onPaymentAuthorize: "processAP",
         onPaymentComplete: "apRequest.onPaymentComplete",
-        onCancel: function () { displayToast({ "xStatus": "Canceled", "xRefNum": "" }, "Apple Pay") }
+        onCancel: "apRequest.cancel"
     };
 }
 //get transaction info
@@ -379,24 +388,31 @@ function getTransactionInfo() {
     lineItems.forEach((item) => {
         finalPrice += parseFloat(item.amount)||0
     })
+    apRequest.totalAmount = finalPrice
     return {
         "lineItems": lineItems,
         total: {
             type: "final",
-            labal: "Total",
+            label: "Total",
             amount: finalPrice
         }
     }
 }
 //validate merchant
 function validateMerchant() {
-    fetch("https://api.cardknox.com/applepay/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data)
+    return new Promise((resolve, reject) => {
+        try {
+            fetch("https://api.cardknox.com/applepay/validate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => {
+                console.log(response)
+                resolve(response.Response)
+            })
+        } catch (err) {
+            reject(err)
+        }
     });
 }
 //send final info to server
