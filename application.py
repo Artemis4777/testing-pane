@@ -143,6 +143,7 @@ def applepay():
             dupe = True
     except:
         pass
+    address = apContent["billingContact"]["addressLines"]
     payload = json.dumps({
         "xcommand": content["command"],
         "xsoftwareversion": "1.0.0",
@@ -150,23 +151,24 @@ def applepay():
         "xsoftwarename": "Testing Pane",
         "xDigitalWalletType": "ApplePay",
         "xkey": content["api-key"],
-        "xamount": payloads["finalPrice"],
+        "xamount": payloads["amountf"],
         "xcardnum": payloads["encodedToken"],
-        "xName": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["name"],
-        "xBillStreet": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["address1"],
-        "xBillCountry": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["countryCode"],
-        "xBillState": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["administrativeArea"],
-        "xBillCity": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["locality"],
-        "xBillZip": apContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["postalCode"],
+        "xBillFirstName": apContent["billingContact"]["givenName"],
+        "xBillLastName": apContent["billingContact"]["familyName"],
+        "xBillStreet": address[0],
+        "xBillCountry": apContent["billingContact"]["countryCode"],
+        "xBillState": apContent["billingContact"]["administrativeArea"],
+        "xBillCity": apContent["billingContact"]["locality"],
+        "xBillZip": apContent["billingContact"]["postalCode"],
         "xallowduplicate": dupe,
     })
+    logging.info(payload)
     apiCall = requests.request("POST", url, headers = headers, data = payload)
     response = apiCall.json()
-    logging.info(response["xStatus"], response["xRefNum"])
+    logging.info(response)
     return json.dumps({"Status": 200, "Response": response})
 
 
 # parameters to run with
 if __name__ == "__main__":
-    # set port to 80 in production
     application.run(debug=False)
