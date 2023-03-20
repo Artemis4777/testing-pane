@@ -480,35 +480,14 @@ function validateMerchant() {
 		}
 	});
 }
-// try {
-// 	fetch("https://api.cardknox.com/applepay/validate", {
-// 		method: "POST",
-// 		headers: { "Content-Type": "application/json" },
-// 	})
-// 		.then((response) => {
-// 			response.json();
-// 		})
-// 		.then((data) => {
-// 			console.log("json response", data);
-// 			resolve(data);
-// 		})
-// 		.catch((err) => {
-// 			console.log(err);
-// 			reject(err);
-// 		});
-// } catch (err) {
-// 	reject(err);
-// 		}
-// 	});
-// }
 //send final info to server
 function processAP(paymentResponse) {
 	return new Promise(function (resolve, reject) {
 		console.log(paymentResponse);
-		paymentToken = paymentResponse.token.paymentData.data;
-		encodedToken = window.btoa(paymentToken);
+		paymentToken = paymentResponse.token.paymentData;
+		encodedToken = window.btoa(JSON.stringify(paymentToken));
 		let payload = formToJSON(form);
-        let amountf = apRequest.totalAmount
+		let amountf = apRequest.totalAmount;
 		console.log(
 			JSON.stringify({
 				payload,
