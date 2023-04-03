@@ -169,6 +169,42 @@ def applepay():
     return json.dumps({"Status": 200, "Response": response})
 
 
+@application.route("/click2pay", methods = ["POST"])
+def click2pay():
+    logging.info(request.is_json)
+    payloads = request.get_json()
+    logging.info(payloads)
+    content = payloads["payload"]
+    c2Content = payloads["clickToPayResponse"]
+    headers = {"Content-Type": "application/json"}
+    url = "https://x1.cardknox.com/gatewayjson"
+    dupe = False
+    try:
+        if content["allow-duplicate"] == "on":
+            dupe = True
+    except:
+        pass
+    payload = json.dumps({
+        "xcommand": content["command"],
+        "xsoftwareversion": "1.0.0",
+        "xversion": "5.0.0",
+        "xsoftwarename": "Testing Pane",
+        "xDigitalWalletType": "ClickToPay",
+        "xkey": content["api-key"],
+        "xamount": c2Content["amount"],
+        "xcardnum": c2Content["payload"]["token"],
+        "xClickToPayTransactionId": c2Content["payload"]["transactionId"],
+        "xClickToPayExternalClientId": c2Content["payload"]["externalClientId"],
+        "xClickToPayEncryptionKey": c2Content["payload"]["encryptionKey"],
+        "xallowduplicate": dupe,
+    })
+    logging.info(payload)
+    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    response = apiCall.json()
+    logging.info(response)
+    return json.dumps({"Status": 200, "Response": response})
+
+
 # parameters to run with
 if __name__ == "__main__":
     application.run(debug=False)

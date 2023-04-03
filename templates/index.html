@@ -44,6 +44,11 @@
                         </div>
 
                         <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="sandboxMode" name="sandboxMode" checked>
+                            <label class="form-check-label">Sandbox Mode</label>
+                        </div>
+
+                        <div class="form-check form-switch">
                             <input type="checkbox" class="form-check-input" id="enable-3ds" name="enable-3ds">
                             <label class="form-check-label">Enable 3D Secure</label>
                         </div>
@@ -268,6 +273,10 @@
                             <label class="form-check-label" for="apay">Apple Pay</label>
                         </div>
                         <div class="form-check">
+                            <input id="c2pay" name="paymentMethod" type="radio" class="form-check-input" required>
+                            <label class="form-check-label" for="c2pay">Click To Pay</label>
+                        </div>
+                        <div class="form-check">
                             <input id="bbpos" name="paymentMethod" type="radio" class="form-check-input" required>
                             <label class="form-check-label" for="bbpos">BBPOS</label>
                         </div>
@@ -279,7 +288,7 @@
                             <label for="card-number" class="form-label">Credit card number</label>
                             <iframe data-ifields-id="card-number" class="form-control iframe"
                                 data-ifields-placeholder="4444333322221111"
-                                src="https://cdn.cardknox.com/ifields/2.14.2211.1101/ifield.htm"></iframe>
+                                src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>
                         </div>
 
                         <div class="col-md-3">
@@ -294,7 +303,7 @@
                         <div class="col-md-3">
                             <label for="cc-cvv" class="form-label">CVV</label>
                             <iframe data-ifields-id="cvv" class="form-control iframe" data-ifields-placeholder="123"
-                                src="https://cdn.cardknox.com/ifields/2.14.2211.1101/ifield.htm"></iframe>
+                                src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>
                         </div>
                     </div>
 
@@ -324,6 +333,17 @@
                             <input type="text" class="form-control" id="merchantName" value="Testing Pane"
                                 name="merchantName">
                         </div>
+
+                    </div>
+
+                    <div class="row gy-3 d-none paymentMethod" id="c2pay-fields">
+
+                        <div class="col-md-12">
+                            <label for="externalClientId" class="form-label">Click To Pay Merchant ID</label>
+                            <input type="text" class="form-control" id="externalClientId" value="Testing Pane"
+                                name="externalClientId">
+                        </div>
+
 
                     </div>
 
@@ -378,6 +398,11 @@
 
                         <div class="col-md-12 submit-button" id="apay-button-div">
                             <div id="ap-container" class="ap hidden">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 submit-button" id="c2pay-button-div">
+                            <div id="click2payContainer">
                             </div>
                         </div>
 

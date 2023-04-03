@@ -1,6 +1,7 @@
 //JavaScript functions for main page
 
 //universal variables for this file
+const clientID = document.getElementById("externalClientId")
 const xcommand = document.getElementById("command");
 const duplicate = document.getElementById("allow-duplicate");
 let xkey = document.getElementById("api-key");
@@ -12,6 +13,7 @@ const threeD = document.getElementById("enable-3ds");
 const threeDf = document.getElementById("enable-3ds-f");
 const enableFriction = document.getElementById("friction-switch");
 const billing = document.getElementById("billing");
+const sandbox = document.getElementById("sandboxMode");
 const billInfo = document.getElementById("billing info");
 const form = document.getElementById("paymentform");
 const test = { xStatus: "Default", xRefNum: "Value" };
@@ -27,7 +29,17 @@ function billingShow() {
 		billInfo.classList.add("d-none");
 	}
 }
-billing.addEventListener("change", billingShow);
+billing.addEventListener("change", billingShow());
+
+//set sandbox or production
+function sandboxMode() {
+	if (sandbox.checked) {
+		console.log("sandbox mode enabled");
+	} else {
+		console.log("sandbox mode disabled");
+	}
+}
+sandbox.addEventListener("change", sandboxMode());
 
 //get time
 function time() {
@@ -136,6 +148,16 @@ function paymentMethods(selectedMethod) {
 			initFunction: "initAP",
 			amountField: "amount",
 		});
+	}
+    if (selectedMethod === "c2pay") {
+		ckClick2Pay.enableClickToPay({
+            environment: c2pEnvironment.sandbox,
+            externalClientId: click2payRequest.externalClientId,
+            click2payContainer: "click2payContainer", 
+            onCPButtonLoaded: click2payRequest.onCPButtonLoaded,
+            onPaymentPrefill: click2payRequest.paymentPrefill,
+            onPaymentSuccess: click2payRequest.paymentSuccess
+        });
 	}
 }
 
@@ -522,6 +544,79 @@ function processAP(paymentResponse) {
 	});
 }
 
+//Click to pay
+const click2payRequest = {
+    environment: c2pEnvironment.sandbox,
+    externalClientId: clientID.value,
+    onCPButtonLoaded: function (resp) {
+        if (!resp) return;
+        if (resp.status === iStatus.success) {
+            console.log("Loaded Click To Pay Button");
+        } else if (resp.reason) {
+            console.log(`Click To Pay Button Load Failed: ${resp.reason}`);
+        }
+    },
+    paymentPrefill: function () {
+        let result = {
+            merchantRequestId: "Merchant defined request ID",
+            currencyCode: "USD",
+            description: "...corp Product",
+            orderId: "Merchant defined order ID",
+            subtotal: amount.value,
+            shippingHandling: "0.00",
+            tax: "0.00",
+            discount: "0.00",
+            giftWrap: "0.00",
+            misc: "0.00",
+            total: "0",
+        }
+        result.total = roundTo((result.subtotal + result.shippingHandling + result.tax + result.discount + result.giftWrap + result.misc), 2)
+        console.log(result)
+        return result
+    },
+    paymentSuccess: function (clickToPayResponse) {
+        return new Promise(function (resolve, reject) {
+            console.log(clickToPayResponse);
+            paymentToken = clickToPayResponse.payload.transactionId;
+            encodedToken = window.btoa(JSON.stringify(paymentToken));
+            let payload = formToJSON(form);
+            let amountf = clickToPayResponse.amount;
+            console.log(
+                JSON.stringify({
+                    payload,
+                    clickToPayResponse,
+                    encodedToken,
+                    paymentToken,
+                })
+            );
+            fetch("/click2pay", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    payload,
+                    clickToPayResponse,
+                    encodedToken,
+                    amountf,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.Response.xStatus) {
+                        if (data.Response.xStatus === "Approved") {
+                            resolve(data);
+                        } else {
+                            reject(data);
+                        }
+                    } else {
+                        reject(data);
+                    }
+                    displayToast(data.Response, "Click To Pay");
+                });
+        });
+    },
+}
+
+
 //bbpos payment
 let bbposPort = document.getElementById("bbposPort");
 let ipAddress = document.getElementById("deviceIpAddress");
@@ -566,6 +661,7 @@ bbposButton.addEventListener("click", function (event) {
 
 //Ending of file
 billingShow();
+sandboxMode()
 let radioButton = document.getElementById("credit");
 radioButton.checked = true;
 radioButton.dispatchEvent(new Event("click"));
