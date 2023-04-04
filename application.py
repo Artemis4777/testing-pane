@@ -191,7 +191,7 @@ def click2pay():
         "xsoftwarename": "Testing Pane",
         "xDigitalWalletType": "ClickToPay",
         "xkey": content["api-key"],
-        "xamount": c2Content["amount"],
+        "xamount": payloads["amountf"],
         "xcardnum": c2Content["payload"]["token"],
         "xClickToPayTransactionId": c2Content["payload"]["transactionId"],
         "xClickToPayExternalClientId": c2Content["payload"]["externalClientId"],

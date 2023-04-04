@@ -580,13 +580,13 @@ const click2payRequest = {
             paymentToken = clickToPayResponse.payload.transactionId;
             encodedToken = window.btoa(JSON.stringify(paymentToken));
             let payload = formToJSON(form);
-            let amountf = clickToPayResponse.amount;
+            let amountf = amount.value;
             console.log(
                 JSON.stringify({
                     payload,
                     clickToPayResponse,
                     encodedToken,
-                    paymentToken,
+                    amountf,
                 })
             );
             fetch("/click2pay", {
