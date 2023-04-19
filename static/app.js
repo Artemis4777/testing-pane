@@ -29,7 +29,7 @@ function billingShow() {
 		billInfo.classList.add("d-none");
 	}
 }
-billing.addEventListener("change", billingShow());
+billing.addEventListener("change", billingShow);
 
 //set sandbox or production
 function sandboxMode() {
@@ -39,7 +39,7 @@ function sandboxMode() {
 		console.log("sandbox mode disabled");
 	}
 }
-sandbox.addEventListener("change", sandboxMode());
+sandbox.addEventListener("change", sandboxMode);
 
 //get time
 function time() {
