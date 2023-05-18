@@ -618,14 +618,23 @@ const click2payRequest = {
 
 
 //bbpos payment
-let bbposPort = document.getElementById("bbposPort");
-let ipAddress = document.getElementById("deviceIpAddress");
-let ipPort = document.getElementById("deviceIpPort");
-let deviceName = document.getElementById("deviceName");
-let deviceTimeout = document.getElementById("deviceTimeout");
-let enabledeviceinsertswipetap = document.getElementById(
-	"enableDeviceInsertSwipeTap"
-);
+const bbposPort = document.getElementById("bbposPort");
+const ipAddress = document.getElementById("deviceIpAddress");
+const ipPort = document.getElementById("deviceIpPort");
+const deviceName = document.getElementById("deviceName");
+const deviceTimeout = document.getElementById("deviceTimeout");
+const enabledeviceinsertswipetap = document.getElementById("enableDeviceInsertSwipeTap");
+const Device_COM_Port = document.getElementById("Device_COM_Port");
+const Device_COM_Baud = document.getElementById("Device_COM_Baud");
+const Device_COM_DataBits = document.getElementById("Device_COM_DataBits");
+const Device_COM_Parity = document.getElementById("Device_COM_Parity");
+const EnableDeviceSignature = document.getElementById("EnableDeviceSignature");
+const EnableKeyedEntry = document.getElementById("EnableKeyedEntry");
+const EnableSilentMode = document.getElementById("EnableSilentMode");
+const EnableTipPrompt = document.getElementById("EnableTipPrompt");
+const EnableDevicePin = document.getElementById("EnableDevicePin");
+const EnableDeviceKeyedEntry = document.getElementById("EnableDeviceKeyedEntry");
+
 bbposButton.addEventListener("click", function (event) {
 	event.preventDefault();
 	payload = {
@@ -637,10 +646,20 @@ bbposButton.addEventListener("click", function (event) {
 		xamount: amount.value,
 		xdeviceipport: ipPort.value,
 		xdeviceipaddress: ipAddress.value,
-		enabledeviceinsertswipetap: enabledeviceinsertswipetap.value,
+		enabledeviceinsertswipetap: enabledeviceinsertswipetap.checked,
 		xdevicename: deviceName.value,
 		xdevicetimeout: deviceTimeout.value,
-		xallowduplicate: duplicate.value === "on",
+		xallowduplicate: duplicate.checked,
+        Device_COM_Port: Device_COM_Port.value,
+        Device_COM_Baud: Device_COM_Baud.value,
+        Device_COM_DataBits: Device_COM_DataBits.value,
+        Device_COM_Parity: Device_COM_Parity.value,
+        EnableDeviceSignature: EnableDeviceSignature.checked,
+        EnableKeyedEntry: EnableKeyedEntry.checked,
+        EnableSilentMode: EnableSilentMode.checked,
+        EnableTipPrompt: EnableTipPrompt.checked,
+        EnableDevicePin: EnableDevicePin.checked,
+        EnableDeviceKeyedEntry: EnableDeviceKeyedEntry.checked,
 	};
 	let url = "https://localemv.com:" + bbposPort.value;
 	body = new URLSearchParams(payload).toString();
