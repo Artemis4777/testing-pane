@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.11.3-alpine
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
