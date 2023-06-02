@@ -634,35 +634,46 @@ const EnableSilentMode = document.getElementById("EnableSilentMode");
 const EnableTipPrompt = document.getElementById("EnableTipPrompt");
 const EnableDevicePin = document.getElementById("EnableDevicePin");
 const EnableDeviceKeyedEntry = document.getElementById("EnableDeviceKeyedEntry");
+const bbposForm = document.getElementById("bbpos-form");
 
-bbposButton.addEventListener("click", function (event) {
+bbposButton.addEventListener("submit", function (event) {
 	event.preventDefault();
-	payload = {
-		xcommand: xcommand.value,
-		xsoftwareversion: "1.0.0",
-		xversion: "5.0.0",
-		xsoftwarename: "Testing Pane",
-		xkey: xkey.value,
-		xamount: amount.value,
-		xdeviceipport: ipPort.value,
-		xdeviceipaddress: ipAddress.value,
-		enabledeviceinsertswipetap: enabledeviceinsertswipetap.checked,
-		xdevicename: deviceName.value,
-		xdevicetimeout: deviceTimeout.value,
-		xallowduplicate: duplicate.checked,
-        Device_COM_Port: Device_COM_Port.value,
-        Device_COM_Baud: Device_COM_Baud.value,
-        Device_COM_DataBits: Device_COM_DataBits.value,
-        Device_COM_Parity: Device_COM_Parity.value,
-        EnableDeviceSignature: EnableDeviceSignature.checked,
-        EnableKeyedEntry: EnableKeyedEntry.checked,
-        EnableSilentMode: EnableSilentMode.checked,
-        EnableTipPrompt: EnableTipPrompt.checked,
-        EnableDevicePin: EnableDevicePin.checked,
-        EnableDeviceKeyedEntry: EnableDeviceKeyedEntry.checked,
-	};
+    payload = formToJSON(bbposForm);
+	// payload = {
+	// 	xcommand: xcommand.value,
+	// 	xsoftwareversion: "1.0.0",
+	// 	xversion: "5.0.0",
+	// 	xsoftwarename: "Testing Pane",
+	// 	xkey: xkey.value,
+	// 	xamount: amount.value,
+	// 	xdeviceipport: ipPort.value,
+	// 	xdeviceipaddress: ipAddress.value,
+	// 	enabledeviceinsertswipetap: enabledeviceinsertswipetap.checked,
+	// 	xdevicename: deviceName.value,
+	// 	xdevicetimeout: deviceTimeout.value,
+	// 	xallowduplicate: duplicate.checked,
+    //     Device_COM_Port: Device_COM_Port.value,
+    //     Device_COM_Baud: Device_COM_Baud.value,
+    //     Device_COM_DataBits: Device_COM_DataBits.value,
+    //     Device_COM_Parity: Device_COM_Parity.value,
+    //     EnableDeviceSignature: EnableDeviceSignature.checked,
+    //     EnableKeyedEntry: EnableKeyedEntry.checked,
+    //     EnableSilentMode: EnableSilentMode.checked,
+    //     EnableTipPrompt: EnableTipPrompt.checked,
+    //     EnableDevicePin: EnableDevicePin.checked,
+    //     EnableDeviceKeyedEntry: EnableDeviceKeyedEntry.checked,
+	// };
+    // const extraFields = document.querySelectorAll(".extra-field");
+    // extraFields.forEach(extraField => {
+    //     const fieldKey = extraField.getElementById("setting-name").value;
+    //     const fieldValue = extraField.getElementById("setting-value").value;
+    //     if (fieldKey && fieldValue) {
+    //         payload.fieldKey = fieldValue
+    //     }
+    // })
+    console.log(payload)
 	let url = "https://localemv.com:" + bbposPort.value;
-	body = new URLSearchParams(payload).toString();
+	body = json.stringify(payload);
 	console.log(body);
 	fetch(url, {
 		method: "POST",
@@ -676,6 +687,26 @@ bbposButton.addEventListener("click", function (event) {
 			displayToast(data, "BBPOS");
 			console.log(data);
 		});
+});
+
+//add more bbpos fields on the fly
+const bbposFields = document.getElementById("new-field-button");
+const newFieldDiv = document.getElementById("new-field-button-div");
+
+bbposFields.addEventListener("click", function (event) {
+	event.preventDefault();
+	displayToast({"xStatus": "New Field"}, "BBPOS");
+    let newField = document.createElement("div");
+    newField.setAttribute("class", "row extra-field");
+    newField.innerHTML = `
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="setting-name" placeholder="Setting Name">
+                </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="setting-value" placeholder="Value">
+                </div>
+        `;
+    newFieldDiv.prepend(newField);
 });
 
 //Ending of file
