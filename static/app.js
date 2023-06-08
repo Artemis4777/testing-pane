@@ -619,6 +619,7 @@ const click2payRequest = {
 
 //bbpos payment
 const bbposPort = document.getElementById("bbposPort");
+const bbposEndpoint = document.getElementById("bbposEndpoint");
 const ipAddress = document.getElementById("deviceIpAddress");
 const ipPort = document.getElementById("deviceIpPort");
 const deviceName = document.getElementById("deviceName");
@@ -661,7 +662,7 @@ bbposButton.addEventListener("click", function (event) {
         EnableDevicePin: EnableDevicePin.checked,
         EnableDeviceKeyedEntry: EnableDeviceKeyedEntry.checked,
 	};
-	let url = "https://localemv.com:" + bbposPort.value;
+	let url = bbposEndpoint.value + bbposPort.value;
 	body = new URLSearchParams(payload).toString();
 	console.log(body);
 	fetch(url, {
