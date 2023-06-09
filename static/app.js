@@ -662,7 +662,7 @@ bbposButton.addEventListener("click", function (event) {
         EnableDevicePin: EnableDevicePin.checked,
         EnableDeviceKeyedEntry: EnableDeviceKeyedEntry.checked,
 	};
-	let url = bbposEndpoint.value + bbposPort.value;
+	let url = bbposEndpoint.value;
 	body = new URLSearchParams(payload).toString();
 	console.log(body);
 	fetch(url, {
