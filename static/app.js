@@ -618,7 +618,6 @@ const click2payRequest = {
 
 
 //bbpos payment
-const bbposPort = document.getElementById("bbposPort");
 const bbposEndpoint = document.getElementById("bbposEndpoint");
 const ipAddress = document.getElementById("deviceIpAddress");
 const ipPort = document.getElementById("deviceIpPort");
