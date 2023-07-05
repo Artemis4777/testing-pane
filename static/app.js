@@ -661,7 +661,7 @@ bbposButton.addEventListener("click", function (event) {
     function updatePayload(key, value) {
         payload[key] = value;
     }
-    const toastElements = toastStack.querySelectorAll(".toast");
+    const toastElements = toastStack.querySelectorAll(".toast.show");
     toastElements.forEach((toastElement) => {
         const keyInput = toastElement.querySelector(".form-control:first-child");
         const valueInput = toastElement.querySelector(".form-control:last-child");
