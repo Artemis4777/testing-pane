@@ -18,6 +18,7 @@ const billInfo = document.getElementById("billing info");
 const form = document.getElementById("paymentform");
 const test = { xStatus: "Default", xRefNum: "Value" };
 const toastTest = document.getElementById("toast-test");
+const toastParameterTest = document.getElementById("toast-parameter-test");
 const bbposButton = document.getElementById("bbpos-button");
 
 //hide or show billing
@@ -59,7 +60,7 @@ function refCheck(message, refnumNum) {
 }
 
 //add new toasts
-function displayToast(messages = test, type = "Test") {
+function displayLogToast(messages = test, type = "Test") {
 	let message = messages.xStatus + " " + messages.xRefNum;
 	const refnumNum = messages.xRefNum;
 	console.log(message, type);
@@ -101,7 +102,37 @@ function displayToast(messages = test, type = "Test") {
 
 toastTest.addEventListener("click", function (event) {
 	event.preventDefault();
-	displayToast(test, "Log Test");
+	displayLogToast(test, "Log Test");
+});
+
+//toasts for holding parameters instead of form
+const toastStack = document.querySelector("#toast-parameter-stack");
+function displayParameterToast(parameterKey, parameterValue) {
+	const toastElement = document.createElement("div");
+	toastElement.setAttribute("class", "toast fade");
+	toastElement.setAttribute("role", "alert");
+	toastElement.setAttribute("aria-live", "assertive");
+	toastElement.setAttribute("aria-atomic", "true");
+    toastElement.innerHTML = `
+        <div class="toast-header">
+            <input class="me-auto form-control" value="${parameterKey}">
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <input type="text" class="form-control" value="${parameterValue}">
+        </div>
+        `;    
+	toastStack.prepend(toastElement);
+	toastElement.classList.add("show");
+	const closeButton = toastElement.querySelector(".btn-close");
+	closeButton.addEventListener("click", function () {
+		toastElement.classList.remove("show");
+	});
+}
+
+toastParameterTest.addEventListener("click", function (event) {
+	event.preventDefault();
+	displayParameterToast("Dummy", "Parameter Test");
 });
 
 //convert form to json
@@ -126,7 +157,7 @@ paymentTypes.forEach((paymentType) => {
 });
 //hide and show payment type buttons and fields
 function paymentMethods(selectedMethod) {
-	displayToast({ xStatus: selectedMethod, xRefNum: " " }, "New Method");
+	displayLogToast({ xStatus: selectedMethod, xRefNum: " " }, "New Method");
 	paymentTypeFieldSets.forEach((paymentTypeFieldSet) => {
 		paymentTypeFieldSet.classList.add("d-none");
 	});
@@ -178,7 +209,7 @@ form.addEventListener("submit", (event) => {
 			})
 				.then((response) => response.json()) // Parse the response as JSON
 				.then((data) => {
-					displayToast(data.Response, "Sale");
+					displayLogToast(data.Response, "Sale");
 					handleVerify(data);
 				});
 		},
@@ -254,7 +285,7 @@ function handle3DSResults(
 	})
 		.then((response) => response.json())
 		.then((data) => {
-			displayToast(data.Response, "Verify");
+			displayLogToast(data.Response, "Verify");
 			submitBtn.disabled = false;
 		});
 }
@@ -296,7 +327,7 @@ const gpRequest = {
 		return processGP(paymentResponse);
 	},
 	onPaymentCanceled: function () {
-		displayToast({ xStatus: "Canceled", xRefNum: "" }, "Google Pay");
+		displayLogToast({ xStatus: "Canceled", xRefNum: "" }, "Google Pay");
 	},
 };
 //initiates googlepay
@@ -345,7 +376,7 @@ function processGP(paymentResponse) {
 				} else {
 					reject(data);
 				}
-				displayToast(data.Response, "Google Pay");
+				displayLogToast(data.Response, "Google Pay");
 			});
 	});
 }
@@ -359,11 +390,11 @@ const apRequest = {
 		buttonType: APButtonType.pay,
 	},
 	handleAPError: function (err) {
-		displayToast(err, "Apple Pay");
+		displayLogToast(err, "Apple Pay");
 	},
 	onPaymentComplete: function (paymentComplete) {
 		let resp = JSON.parse(paymentComplete.response);
-		displayToast(resp, "Apple Pay");
+		displayLogToast(resp, "Apple Pay");
 	},
 	totalAmount: 0,
 	apButtonLoaded: function (resp) {
@@ -401,7 +432,7 @@ const apRequest = {
 		});
 	},
 	cancel: function () {
-		displayToast({ xStatus: "Canceled", xRefNum: "" }, "Apple Pay");
+		displayLogToast({ xStatus: "Canceled", xRefNum: "" }, "Apple Pay");
 	},
 };
 //apple pay init
@@ -539,7 +570,7 @@ function processAP(paymentResponse) {
 				} else {
 					reject(data);
 				}
-				displayToast(data.Response, "Apple Pay");
+				displayLogToast(data.Response, "Apple Pay");
 			});
 	});
 }
@@ -610,7 +641,7 @@ const click2payRequest = {
                     } else {
                         reject(data);
                     }
-                    displayToast(data.Response, "Click To Pay");
+                    displayLogToast(data.Response, "Click To Pay");
                 });
         });
     },
@@ -619,48 +650,25 @@ const click2payRequest = {
 
 //bbpos payment
 const bbposEndpoint = document.getElementById("bbposEndpoint");
-const ipAddress = document.getElementById("deviceIpAddress");
-const ipPort = document.getElementById("deviceIpPort");
-const deviceName = document.getElementById("deviceName");
-const deviceTimeout = document.getElementById("deviceTimeout");
-const enabledeviceinsertswipetap = document.getElementById("enableDeviceInsertSwipeTap");
-const Device_COM_Port = document.getElementById("Device_COM_Port");
-const Device_COM_Baud = document.getElementById("Device_COM_Baud");
-const Device_COM_DataBits = document.getElementById("Device_COM_DataBits");
-const Device_COM_Parity = document.getElementById("Device_COM_Parity");
-const EnableDeviceSignature = document.getElementById("EnableDeviceSignature");
-const EnableKeyedEntry = document.getElementById("EnableKeyedEntry");
-const EnableSilentMode = document.getElementById("EnableSilentMode");
-const EnableTipPrompt = document.getElementById("EnableTipPrompt");
-const EnableDevicePin = document.getElementById("EnableDevicePin");
-const EnableDeviceKeyedEntry = document.getElementById("EnableDeviceKeyedEntry");
 
 bbposButton.addEventListener("click", function (event) {
 	event.preventDefault();
 	payload = {
 		xcommand: xcommand.value,
-		xsoftwareversion: "1.0.0",
-		xversion: "5.0.0",
-		xsoftwarename: "Testing Pane",
-		xkey: xkey.value,
 		xamount: amount.value,
-		xdeviceipport: ipPort.value,
-		xdeviceipaddress: ipAddress.value,
-		enabledeviceinsertswipetap: enabledeviceinsertswipetap.checked,
-		xdevicename: deviceName.value,
-		xdevicetimeout: deviceTimeout.value,
-		xallowduplicate: duplicate.checked,
-        Device_COM_Port: Device_COM_Port.value,
-        Device_COM_Baud: Device_COM_Baud.value,
-        Device_COM_DataBits: Device_COM_DataBits.value,
-        Device_COM_Parity: Device_COM_Parity.value,
-        EnableDeviceSignature: EnableDeviceSignature.checked,
-        EnableKeyedEntry: EnableKeyedEntry.checked,
-        EnableSilentMode: EnableSilentMode.checked,
-        EnableTipPrompt: EnableTipPrompt.checked,
-        EnableDevicePin: EnableDevicePin.checked,
-        EnableDeviceKeyedEntry: EnableDeviceKeyedEntry.checked,
+		xkey: xkey.value,
 	};
+    function updatePayload(key, value) {
+        payload[key] = value;
+    }
+    const toastElements = toastStack.querySelectorAll(".toast");
+    toastElements.forEach((toastElement) => {
+        const keyInput = toastElement.querySelector(".form-control:first-child");
+        const valueInput = toastElement.querySelector(".form-control:last-child");
+        const key = keyInput.value;
+        const value = valueInput.value;
+        updatePayload(key, value);
+    });
 	let url = bbposEndpoint.value;
 	body = new URLSearchParams(payload).toString();
 	console.log(body);
@@ -673,7 +681,7 @@ bbposButton.addEventListener("click", function (event) {
 	})
 		.then((response) => response.json())
 		.then((data) => {
-			displayToast(data, "BBPOS");
+			displayLogToast(data, "BBPOS");
 			console.log(data);
 		});
 });
