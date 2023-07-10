@@ -132,7 +132,7 @@ function displayParameterToast(parameterKey, parameterValue) {
 
 toastParameterTest.addEventListener("click", function (event) {
 	event.preventDefault();
-	displayParameterToast("Dummy", "Parameter Test");
+	displayParameterToast("", "");
 });
 
 //convert form to json

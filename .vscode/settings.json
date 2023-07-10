@@ -5,5 +5,5 @@
     },
     "[dockercompose]": {
         "editor.tabSize": 4
-    }
+    } 
 }
