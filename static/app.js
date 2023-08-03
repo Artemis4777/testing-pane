@@ -18,7 +18,8 @@ const billInfo = document.getElementById("billing info");
 const form = document.getElementById("paymentform");
 const test = { xStatus: "Default", xRefNum: "Value" };
 const toastTest = document.getElementById("toast-test");
-const toastParameterTest = document.getElementById("toast-parameter-test");
+const newToastParameter = document.getElementById("toast-parameter");
+const addDeviceParameters = document.getElementById("device-toast-parameters");
 const bbposButton = document.getElementById("bbpos-button");
 
 //hide or show billing
@@ -130,9 +131,25 @@ function displayParameterToast(parameterKey, parameterValue) {
 	});
 }
 
-toastParameterTest.addEventListener("click", function (event) {
+newToastParameter.addEventListener("click", function (event) {
 	event.preventDefault();
 	displayParameterToast("", "");
+});
+
+addDeviceParameters.addEventListener("click", function (event) {
+	event.preventDefault();
+	displayParameterToast("xDeviceName", "");
+    displayParameterToast("xDeviceIPAddress", "");
+    displayParameterToast("xDeviceIPPort", "");
+    displayParameterToast("xDeviceComPort", "");
+    displayParameterToast("xDeviceComBaud", "");
+    displayParameterToast("xDeviceComParity", "");
+    displayParameterToast("xDeviceComDataBits", "");
+    displayParameterToast("xEnableDeviceSwipe", "");
+    displayParameterToast("xEnableKeyedEntry", "");
+    displayParameterToast("xRedirectURL", "");
+    displayParameterToast("xDeviceTimeOut", "");
+    displayParameterToast("xEnableSilentMode", "");
 });
 
 //convert form to json
@@ -190,6 +207,14 @@ function paymentMethods(selectedMethod) {
             onPaymentSuccess: click2payRequest.paymentSuccess
         });
 	}
+    if (selectedMethod === "bbpos") {
+        displayParameterToast("xAmount", amount.value)
+        displayParameterToast("xCommand", xcommand.value)
+        if (allowDupe.checked) {
+            displayParameterToast("xAllowDuplicate", "True")
+        }
+        displayParameterToast("xKey", "");
+    }
 }
 
 //base api call
@@ -405,8 +430,8 @@ const apRequest = {
 			{
 				label: "Free Shipping",
 				amount: "0.00",
-				identifier: "free",
-				detail: "Delivers in five light years",
+				identifier: "Free",
+				detail: "Delivers at light speed. Please calculate delivery date on your own time.",
 			},
 		];
 	},
