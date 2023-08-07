@@ -107,14 +107,14 @@ toastTest.addEventListener("click", function (event) {
 });
 
 //toasts for holding parameters instead of form
-const toastStack = document.querySelector("#toast-parameter-stack");
+const toastParameterStack = document.querySelector("#toast-parameter-stack");
 function displayParameterToast(parameterKey, parameterValue) {
-	const toastElement = document.createElement("div");
-	toastElement.setAttribute("class", "toast fade");
-	toastElement.setAttribute("role", "alert");
-	toastElement.setAttribute("aria-live", "assertive");
-	toastElement.setAttribute("aria-atomic", "true");
-    toastElement.innerHTML = `
+	const toastParameterElement = document.createElement("div");
+	toastParameterElement.setAttribute("class", "toast fade");
+	toastParameterElement.setAttribute("role", "alert");
+	toastParameterElement.setAttribute("aria-live", "assertive");
+	toastParameterElement.setAttribute("aria-atomic", "true");
+    toastParameterElement.innerHTML = `
         <div class="toast-header">
             <input class="me-auto form-control" value="${parameterKey}">
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -123,11 +123,11 @@ function displayParameterToast(parameterKey, parameterValue) {
             <input type="text" class="form-control" value="${parameterValue}">
         </div>
         `;    
-	toastStack.prepend(toastElement);
-	toastElement.classList.add("show");
-	const closeButton = toastElement.querySelector(".btn-close");
+	toastParameterStack.prepend(toastParameterElement);
+	toastParameterElement.classList.add("show");
+	const closeButton = toastParameterElement.querySelector(".btn-close");
 	closeButton.addEventListener("click", function () {
-		toastElement.classList.remove("show");
+		toastParameterElement.classList.remove("show");
 	});
 }
 
@@ -138,19 +138,26 @@ newToastParameter.addEventListener("click", function (event) {
 
 addDeviceParameters.addEventListener("click", function (event) {
 	event.preventDefault();
-	displayParameterToast("xDeviceName", "");
-    displayParameterToast("xDeviceIPAddress", "");
-    displayParameterToast("xDeviceIPPort", "");
-    displayParameterToast("xDeviceComPort", "");
+    displayParameterToast("xDeviceTimeOut", "");
+    displayParameterToast("xRedirectURL", "");
+    displayParameterToast("xEnableKeyedEntry", "");
+    displayParameterToast("xEnableDeviceSwipe", "");
     displayParameterToast("xDeviceComBaud", "");
     displayParameterToast("xDeviceComParity", "");
     displayParameterToast("xDeviceComDataBits", "");
-    displayParameterToast("xEnableDeviceSwipe", "");
-    displayParameterToast("xEnableKeyedEntry", "");
-    displayParameterToast("xRedirectURL", "");
-    displayParameterToast("xDeviceTimeOut", "");
-    displayParameterToast("xEnableSilentMode", "");
+    displayParameterToast("xDeviceComPort", "");
+    displayParameterToast("xDeviceIPPort", "");
+    displayParameterToast("xDeviceIPAddress", "");
+	displayParameterToast("xDeviceName", "");
 });
+
+
+function clearBBPOSParameters() {
+    const toastParameterElements = toastParameterStack.querySelectorAll(".toast.show");
+    toastParameterElements.forEach((toastParameterElement) => {
+        toastParameterElement.classList.remove("show");
+    });
+}
 
 //convert form to json
 function formToJSON(form) {
@@ -208,12 +215,13 @@ function paymentMethods(selectedMethod) {
         });
 	}
     if (selectedMethod === "bbpos") {
+        clearBBPOSParameters()
         displayParameterToast("xAmount", amount.value)
         displayParameterToast("xCommand", xcommand.value)
-        if (allowDupe.checked) {
+        if (duplicate.checked) {
             displayParameterToast("xAllowDuplicate", "True")
         }
-        displayParameterToast("xKey", "");
+        displayParameterToast("xKey", xkey.value);
     }
 }
 
@@ -686,10 +694,10 @@ bbposButton.addEventListener("click", function (event) {
     function updatePayload(key, value) {
         payload[key] = value;
     }
-    const toastElements = toastStack.querySelectorAll(".toast.show");
-    toastElements.forEach((toastElement) => {
-        const keyInput = toastElement.querySelector(".form-control:first-child");
-        const valueInput = toastElement.querySelector(".form-control:last-child");
+    const toastParameterElements = toastParameterStack.querySelectorAll(".toast.show");
+    toastParameterElements.forEach((toastParameterElement) => {
+        const keyInput = toastParameterElement.querySelector(".form-control:first-child");
+        const valueInput = toastParameterElement.querySelector(".form-control:last-child");
         const key = keyInput.value;
         const value = valueInput.value;
         updatePayload(key, value);
