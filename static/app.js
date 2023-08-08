@@ -752,6 +752,7 @@ ebtOnlineButton.addEventListener("click", function (event) {
 function redirectToPin(Response){
     fetch(Response.xPinPadURL, {
         method: "POST",
+        redirect: "follow",
         body: {
             "xAccuID": Response.xAccuID,
             "AccuLanguage": "en-US",
