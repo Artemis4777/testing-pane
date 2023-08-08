@@ -4,8 +4,9 @@
 const clientID = document.getElementById("externalClientId")
 const xcommand = document.getElementById("command");
 const duplicate = document.getElementById("allow-duplicate");
-let xkey = document.getElementById("api-key");
-let amount = document.getElementById("amount");
+const xkey = document.getElementById("api-key");
+const amount = document.getElementById("amount");
+const refnum = document.getElementById("refnum");
 const submitBtn = document.getElementById("paymentbutton");
 const enviro = document.getElementById("3ds-environment").value;
 const threeDe = document.getElementById("3ds-environment-d");
@@ -21,6 +22,9 @@ const toastTest = document.getElementById("toast-test");
 const newToastParameter = document.getElementById("toast-parameter");
 const addDeviceParameters = document.getElementById("device-toast-parameters");
 const bbposButton = document.getElementById("bbpos-button");
+const ebtOnlineButton = document.getElementById("ebtOnline-button");
+const ebtCardnum = document.getElementById("ebtCardnum");
+const ebtShipMethod = document.getElementById("ebtShipMethod");
 
 //hide or show billing
 function billingShow() {
@@ -229,7 +233,7 @@ function paymentMethods(selectedMethod) {
 form.addEventListener("submit", (event) => {
 	event.preventDefault();
 	let ifieldsKey = document.getElementById("ifields-key").value;
-	setAccount(ifieldsKey, "NB Everything", "1.0");
+	setAccount(ifieldsKey, "Testing Pane", "1.0");
 	threedstuff();
 	submitBtn.disabled = true;
 	getTokens(
@@ -242,7 +246,7 @@ form.addEventListener("submit", (event) => {
 			})
 				.then((response) => response.json()) // Parse the response as JSON
 				.then((data) => {
-					displayLogToast(data.Response, "Sale");
+					displayLogToast(data.Response, "Card");
 					handleVerify(data);
 				});
 		},
@@ -718,6 +722,50 @@ bbposButton.addEventListener("click", function (event) {
 			console.log(data);
 		});
 });
+
+
+
+//EBT Online
+ebtOnlineButton.addEventListener("click", function (event) {
+	event.preventDefault();
+    let payload = formToJSON(form)
+    if (payload["refnum"] != "") {
+        payload["ebtCommand"] = xcommand.value
+        payload["refnum"] = refnum.value
+    }
+    else payload["ebtCommand"] = "ebtonline:initiate"
+    fetch("/ebtonline", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            displayLogToast(data.Response, "EBT Online");
+            console.log(data);
+        });
+    if (Response.xPinPadURL){
+        fetch(Response.xPinPadURL, {
+            method: "POST",
+            body: {
+                "xAccuID": Response.xAccuID,
+                "AccuLanguage": "en-US",
+                "refnum": Response.xRefNum,
+                "command": xcommand.value,
+                "AccuReturnURL": "https://cardknox.link/ebtcontinued"
+            },
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                displayLogToast(data, "EBT Pin");
+                console.log(data);
+            });
+    }
+});
+
 
 //Ending of file
 billingShow();

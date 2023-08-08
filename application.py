@@ -204,6 +204,45 @@ def click2pay():
     logging.info(response)
     return json.dumps({"Status": 200, "Response": response})
 
+# EBT Online to gateway
+@application.route("/ebtonline", methods=["POST"])
+def ebtOnline():
+    logging.info(request.is_json)
+    content = request.get_json()
+    logging.info(content)
+    headers = {"Content-Type": "application/json"}
+    url = "https://x1.cardknox.com/gatewayjson"
+    dupe = False
+    try:
+        if content["allow-duplicate"] == "on":
+            dupe = True
+    except:
+        pass
+    payload = json.dumps({
+        "xcommand": content["ebtCommand"],
+        "xsoftwareversion": "1.0.0",
+        "xversion": "5.0.0",
+        "xsoftwarename": "Testing Pane",
+        "xkey": content["api-key"],
+        "xamount": content["amount"],
+        "xcardnum": content["ebtCardnum"],
+        "xshipmethod": content["ebtShipMethod"],
+        "xrefnum": content["refnum"],
+        "xallowduplicate": dupe,
+    })
+    print(payload)
+    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    response = apiCall.json()
+    logging.info(response["xStatus"], response["xRefNum"])
+    return json.dumps({"Status": 200, "Response": response})
+
+# EBT Online redirect
+@application.route("/ebtcontinued", methods=["POST", "GET"])
+def ebtContinued():
+    refnum = request.args.get('refnum')
+    command = request.args.get('command')
+    return render_template(["index.html", "app.js", "style.css"], refnum=refnum, command=command)
+
 
 # parameters to run with
 if __name__ == "__main__":
