@@ -743,28 +743,32 @@ ebtOnlineButton.addEventListener("click", function (event) {
         .then((data) => {
             displayLogToast(data.Response, "EBT Online");
             console.log(data);
+            if (data.Response.xPinPadURL) {
+                redirectToPin(data.Response)
+            }
         });
-    if (Response.xPinPadURL){
-        fetch(Response.xPinPadURL, {
-            method: "POST",
-            body: {
-                "xAccuID": Response.xAccuID,
-                "AccuLanguage": "en-US",
-                "refnum": Response.xRefNum,
-                "command": xcommand.value,
-                "AccuReturnURL": "https://cardknox.link/ebtcontinued"
-            },
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                displayLogToast(data, "EBT Pin");
-                console.log(data);
-            });
-    }
 });
+//enter ebt pin
+function redirectToPin(Response){
+    fetch(Response.xPinPadURL, {
+        method: "POST",
+        body: {
+            "xAccuID": Response.xAccuID,
+            "AccuLanguage": "en-US",
+            "refnum": Response.xRefNum,
+            "command": xcommand.value,
+            "AccuReturnURL": "https://cardknox.link/ebtcontinued"
+        },
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            displayLogToast(data, "EBT Pin");
+            console.log(data);
+        });
+}
 
 
 //Ending of file
