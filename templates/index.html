@@ -361,15 +361,6 @@
                             <input type="text" class="form-control" id="ebtShipMethod" name="ebtShipMethod" value="CustomerPickup">
                         </div>
 
-                        <form id="pinPadLink" action="" method="post">
-                            <input type="text" id="AccuId" name="AccuId" value="">
-                            <input type="text" id="AccuReturnURL" name="AccuReturnURL" value="">
-                            <input type="text" id="AccuLanguage" name="AccuLanguage" value="en-US">
-                            <input type="text" id="pinPadRefnum" name="pinPadRefnum" value="">
-                            <input type="text" id="pinPadCommand" name="pinPadCommand" value="">
-                            <input id="openPinPadButton" type="submit" value="Submit">
-                        </form>
-
                     </div>
 
                     <hr class="my-4">
@@ -420,6 +411,14 @@
 
                     </div>
                 </div>
+            </form>
+
+            <form id="pinPadLink" action="https://test.paysecure.acculynk.net/PINpad" method="post">
+                <input type="hidden" id="AccuId" name="AccuId" value="">
+                <input type="hidden" id="AccuReturnURL" name="AccuReturnURL" value="">
+                <input type="hidden" id="AccuLanguage" name="AccuLanguage" value="en-US">
+                <input type="hidden" id="pinPadRefnum" name="pinPadRefnum" value="">
+                <input type="hidden" id="pinPadCommand" name="pinPadCommand" value="">
             </form>
 
         </main>

@@ -749,11 +749,10 @@ ebtOnlineButton.addEventListener("click", function (event) {
         });
 });
 //enter ebt pin
-const openPinPadButton = document.getElementById("openPinPadButton");
 const accuReturnURL = document.getElementById("AccuReturnURL");
 const accuId = document.getElementById("AccuId");
 const accuLanguage = document.getElementById("AccuLanguage");
-const pinPadLink = document.getElementById("pinPadLink");
+//const pinPadLink = document.getElementById("pinPadLink");
 const pinPadRefnum = document.getElementById("pinPadRefnum");
 const pinPadCommand = document.getElementById("pinPadCommand");
 
@@ -761,10 +760,9 @@ function redirectToPin(Response){
     accuReturnURL.value = "https://cardknox.link/ebtcontinued"
     accuId.value = Response.xAccuID
     accuLanguage.value = "en-US"
-    pinPadLink.action = Response.xPinPadURL
     pinPadCommand.value = xcommand.value
     pinPadRefnum.value = Response.xRefNum
-    openPinPadButton.dispatchEvent(new Event("click"));
+    document.forms["pinPadLink"].submit()
 }
 
 
