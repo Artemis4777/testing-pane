@@ -239,8 +239,8 @@ def ebtOnline():
 # EBT Online redirect
 @application.route("/ebtcontinued", methods=["POST", "GET"])
 def ebtContinued():
-    refnum = request.args.get('refnum')
-    command = request.args.get('command')
+    refnum = request.args.get('pinPadRefnum')
+    command = request.args.get('pinPadCommand')
     return render_template(["index.html", "app.js", "style.css"], refnum=refnum, command=command)
 
 
