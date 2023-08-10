@@ -752,9 +752,12 @@ ebtOnlineButton.addEventListener("click", function (event) {
 const accuReturnURL = document.getElementById("AccuReturnURL");
 const accuId = document.getElementById("AccuId");
 const accuLanguage = document.getElementById("AccuLanguage");
-//const pinPadLink = document.getElementById("pinPadLink");
+//const pinModal = document.getElementById("pinModal");
 const pinPadRefnum = document.getElementById("pinPadRefnum");
 const pinPadCommand = document.getElementById("pinPadCommand");
+var pinModal = new bootstrap.Modal(document.getElementById('pinModal'), {
+    keyboard: false
+  })  
 
 function redirectToPin(Response){
     accuReturnURL.value = "https://cardknox.link/ebtcontinued"
@@ -762,6 +765,7 @@ function redirectToPin(Response){
     accuLanguage.value = "en-US"
     pinPadCommand.value = xcommand.value
     pinPadRefnum.value = Response.xRefNum
+    pinModal.show()
     document.forms["pinPadLink"].submit()
 }
 
