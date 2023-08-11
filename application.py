@@ -239,9 +239,8 @@ def ebtOnline():
 # EBT Online redirect
 @application.route("/ebtcontinued", methods=["POST", "GET"])
 def ebtContinued():
-    pinRefnum = request.args.get('pinPadRefnum')
-    pinCommand = request.args.get('pinPadCommand')
-    return render_template(["index.html", "app.js", "style.css"], refnum=pinRefnum, command=pinCommand)
+    logging.info("EBT Pin Entered")
+    return render_template("pinDoneMessage.html")
 
 
 # parameters to run with

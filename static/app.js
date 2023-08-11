@@ -729,7 +729,7 @@ bbposButton.addEventListener("click", function (event) {
 ebtOnlineButton.addEventListener("click", function (event) {
 	event.preventDefault();
     let payload = formToJSON(form)
-    if (payload["refnum"] != "") {
+    if (payload["refnum"] !== "") {
         payload["ebtCommand"] = xcommand.value
         payload["refnum"] = refnum.value
     }
@@ -749,6 +749,7 @@ ebtOnlineButton.addEventListener("click", function (event) {
         });
 });
 //enter ebt pin
+const modaliFrame = document.getElementById("modaliFrame")
 const accuReturnURL = document.getElementById("AccuReturnURL");
 const accuId = document.getElementById("AccuId");
 const accuLanguage = document.getElementById("AccuLanguage");
@@ -767,6 +768,7 @@ function redirectToPin(Response){
     pinPadRefnum.value = Response.xRefNum
     pinModal.show()
     document.forms["pinPadLink"].submit()
+    refnum.value = Response.xRefNum
 }
 
 
