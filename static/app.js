@@ -25,6 +25,7 @@ const bbposButton = document.getElementById("bbpos-button");
 const ebtOnlineButton = document.getElementById("ebtOnline-button");
 const ebtCardnum = document.getElementById("ebtCardnum");
 const ebtShipMethod = document.getElementById("ebtShipMethod");
+const resultsModalBody = document.getElementById("resultsModalBody")
 
 //hide or show billing
 function billingShow() {
@@ -57,12 +58,21 @@ function time() {
 //button to open refnum
 function refCheck(message, refnumNum) {
 	if (Number(refnumNum) >= 666298174) {
-		const refString = `<button type="button" class="btn btn-light btn-sm ref-button">${message}</button>`;
+		const refString = `<button type="button" class="btn btn-link btn-sm ref-button">${message}</button>`;
 		return refString;
 	} else {
 		return message;
 	}
 }
+
+
+//results modal
+function resultsModal(payload) {
+    resultsModalBody.innerHTML = JSON.stringify(payload, null, 3)
+    const resultsModalButton = `<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resultsModal"> View Details </button>`
+    return resultsModalButton
+}
+
 
 //add new toasts
 function displayLogToast(messages = test, type = "Test") {
@@ -85,6 +95,7 @@ function displayLogToast(messages = test, type = "Test") {
             </div>
             <div class="toast-body">
             ${refCheck(message, +refnumNum, messages)}
+            ${resultsModal(messages)}
             </div>
         `;
 	const toastStack = document.querySelector("#toast-stack");
