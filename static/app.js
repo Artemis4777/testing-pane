@@ -68,9 +68,12 @@ function refCheck(message, refnumNum) {
 
 //results modal
 function resultsModal(payload) {
-    resultsModalBody.innerHTML = JSON.stringify(payload, null, 3)
-    const resultsModalButton = `<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resultsModal"> View Details </button>`
-    return resultsModalButton
+    if (Number(payload.xRefNum) >= 666298174) {
+		const resultsModalButton = `<button type="button" id="results${payload.xRefNum}" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resultsModal"> View Details </button>`
+        return resultsModalButton
+	} else {
+		return " ";
+	}
 }
 
 
@@ -101,6 +104,7 @@ function displayLogToast(messages = test, type = "Test") {
 	const toastStack = document.querySelector("#toast-stack");
 	toastStack.prepend(toastElement);
 	const refButton = document.querySelector(".ref-button");
+    const resultsButton = document.querySelector(`#results${messages.xRefNum}`);
 	if (refButton) {
 		refButton.addEventListener("click", function () {
 			window.open(
@@ -108,7 +112,12 @@ function displayLogToast(messages = test, type = "Test") {
 				"_blank"
 			);
 		});
-	}
+	} 
+    if (resultsButton) {
+        resultsButton.addEventListener("click", function () {
+            resultsModalBody.innerHTML = JSON.stringify(messages, null, 3)
+        })
+    }
 	toastElement.classList.add("show");
 	const closeButton = toastElement.querySelector(".btn-close");
 	closeButton.addEventListener("click", function () {
