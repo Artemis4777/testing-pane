@@ -724,7 +724,7 @@ bbposButton.addEventListener("click", function (event) {
         const valueInput = toastParameterElement.querySelector(".form-control:last-child");
         const key = keyInput.value;
         const value = valueInput.value;
-        updatePayload(key, value);
+        updatePayload(key.toLowerCase(), value);
     });
 	let url = bbposEndpoint.value;
 	body = new URLSearchParams(payload).toString();
