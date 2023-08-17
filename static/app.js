@@ -165,7 +165,7 @@ addDeviceParameters.addEventListener("click", function (event) {
     displayParameterToast("xDeviceTimeOut", "");
     displayParameterToast("xRedirectURL", "");
     displayParameterToast("xEnableKeyedEntry", "");
-    displayParameterToast("xEnableDeviceSwipe", "");
+    displayParameterToast("xEnableDeviceInsertSwipeTap", "True");
     displayParameterToast("xDeviceComBaud", "");
     displayParameterToast("xDeviceComParity", "");
     displayParameterToast("xDeviceComDataBits", "");
