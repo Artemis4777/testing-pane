@@ -115,7 +115,7 @@ function displayLogToast(messages = test, type = "Test") {
 	} 
     if (resultsButton) {
         resultsButton.addEventListener("click", function () {
-            resultsModalBody.innerHTML = JSON.stringify(messages, null, 3)
+            resultsModalBody.innerHTML = JSON.stringify(messages, null, 4)
         })
     }
 	toastElement.classList.add("show");
