@@ -1,6 +1,14 @@
-# everything-page
 
-Would you like to run this page? Follow these steps to run it locally on your computer.
+# Testing Pane
+
+>Live page:
+https://cardknox.link
+
+
+
+**Run Locally:**
+
+Would you like to run and debug this page? Follow these steps to run it locally on your computer.
 
 Prerequisites: (Skip if you already have all these)
   1. Python 3 or higher (download from here: https://www.python.org/downloads/)
