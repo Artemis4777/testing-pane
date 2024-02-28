@@ -1,7 +1,7 @@
 //JavaScript functions for main page
 
 //universal variables for this file
-const clientID = document.getElementById("externalClientId")
+const clientID = document.getElementById("externalClientId");
 const xcommand = document.getElementById("command");
 const duplicate = document.getElementById("allow-duplicate");
 const xkey = document.getElementById("api-key");
@@ -25,7 +25,7 @@ const bbposButton = document.getElementById("bbpos-button");
 const ebtOnlineButton = document.getElementById("ebtOnline-button");
 const ebtCardnum = document.getElementById("ebtCardnum");
 const ebtShipMethod = document.getElementById("ebtShipMethod");
-const resultsModalBody = document.getElementById("resultsModalBody")
+const resultsModalBody = document.getElementById("resultsModalBody");
 
 //hide or show billing
 function billingShow() {
@@ -65,17 +65,15 @@ function refCheck(message, refnumNum) {
 	}
 }
 
-
 //results modal
 function resultsModal(payload) {
-    if (Number(payload.xRefNum) >= 666298174) {
-		const resultsModalButton = `<button type="button" id="results${payload.xRefNum}" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resultsModal"> View Details </button>`
-        return resultsModalButton
+	if (Number(payload.xRefNum) >= 666298174) {
+		const resultsModalButton = `<button type="button" id="results${payload.xRefNum}" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resultsModal"> View Details </button>`;
+		return resultsModalButton;
 	} else {
 		return " ";
 	}
 }
-
 
 //add new toasts
 function displayLogToast(messages = test, type = "Test") {
@@ -104,7 +102,7 @@ function displayLogToast(messages = test, type = "Test") {
 	const toastStack = document.querySelector("#toast-stack");
 	toastStack.prepend(toastElement);
 	const refButton = document.querySelector(".ref-button");
-    const resultsButton = document.querySelector(`#results${messages.xRefNum}`);
+	const resultsButton = document.querySelector(`#results${messages.xRefNum}`);
 	if (refButton) {
 		refButton.addEventListener("click", function () {
 			window.open(
@@ -112,12 +110,12 @@ function displayLogToast(messages = test, type = "Test") {
 				"_blank"
 			);
 		});
-	} 
-    if (resultsButton) {
-        resultsButton.addEventListener("click", function () {
-            resultsModalBody.innerHTML = JSON.stringify(messages, null, 4)
-        })
-    }
+	}
+	if (resultsButton) {
+		resultsButton.addEventListener("click", function () {
+			resultsModalBody.innerHTML = JSON.stringify(messages, null, 4);
+		});
+	}
 	toastElement.classList.add("show");
 	const closeButton = toastElement.querySelector(".btn-close");
 	closeButton.addEventListener("click", function () {
@@ -138,7 +136,7 @@ function displayParameterToast(parameterKey, parameterValue) {
 	toastParameterElement.setAttribute("role", "alert");
 	toastParameterElement.setAttribute("aria-live", "assertive");
 	toastParameterElement.setAttribute("aria-atomic", "true");
-    toastParameterElement.innerHTML = `
+	toastParameterElement.innerHTML = `
         <div class="toast-header">
             <input class="me-auto form-control" value="${parameterKey}">
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -146,7 +144,7 @@ function displayParameterToast(parameterKey, parameterValue) {
         <div class="toast-body">
             <input type="text" class="form-control" value="${parameterValue}">
         </div>
-        `;    
+        `;
 	toastParameterStack.prepend(toastParameterElement);
 	toastParameterElement.classList.add("show");
 	const closeButton = toastParameterElement.querySelector(".btn-close");
@@ -162,25 +160,25 @@ newToastParameter.addEventListener("click", function (event) {
 
 addDeviceParameters.addEventListener("click", function (event) {
 	event.preventDefault();
-    displayParameterToast("xDeviceTimeOut", "");
-    displayParameterToast("xRedirectURL", "");
-    displayParameterToast("xEnableKeyedEntry", "");
-    displayParameterToast("xEnableDeviceInsertSwipeTap", "True");
-    displayParameterToast("xDeviceComBaud", "");
-    displayParameterToast("xDeviceComParity", "");
-    displayParameterToast("xDeviceComDataBits", "");
-    displayParameterToast("xDeviceComPort", "");
-    displayParameterToast("xDeviceIPPort", "");
-    displayParameterToast("xDeviceIPAddress", "");
+	displayParameterToast("xDeviceTimeOut", "");
+	displayParameterToast("xRedirectURL", "");
+	displayParameterToast("xEnableKeyedEntry", "");
+	displayParameterToast("xEnableDeviceInsertSwipeTap", "True");
+	displayParameterToast("xDeviceComBaud", "");
+	displayParameterToast("xDeviceComParity", "");
+	displayParameterToast("xDeviceComDataBits", "");
+	displayParameterToast("xDeviceComPort", "");
+	displayParameterToast("xDeviceIPPort", "");
+	displayParameterToast("xDeviceIPAddress", "");
 	displayParameterToast("xDeviceName", "");
 });
 
-
 function clearBBPOSParameters() {
-    const toastParameterElements = toastParameterStack.querySelectorAll(".toast.show");
-    toastParameterElements.forEach((toastParameterElement) => {
-        toastParameterElement.classList.remove("show");
-    });
+	const toastParameterElements =
+		toastParameterStack.querySelectorAll(".toast.show");
+	toastParameterElements.forEach((toastParameterElement) => {
+		toastParameterElement.classList.remove("show");
+	});
 }
 
 //convert form to json
@@ -228,53 +226,61 @@ function paymentMethods(selectedMethod) {
 			amountField: "amount",
 		});
 	}
-    if (selectedMethod === "c2pay") {
+	if (selectedMethod === "c2pay") {
 		ckClick2Pay.enableClickToPay({
-            environment: c2pEnvironment.sandbox,
-            externalClientId: click2payRequest.externalClientId,
-            click2payContainer: "click2payContainer", 
-            onCPButtonLoaded: click2payRequest.onCPButtonLoaded,
-            onPaymentPrefill: click2payRequest.paymentPrefill,
-            onPaymentSuccess: click2payRequest.paymentSuccess
-        });
+			environment: c2pEnvironment.sandbox,
+			externalClientId: click2payRequest.externalClientId,
+			click2payContainer: "click2payContainer",
+			onCPButtonLoaded: click2payRequest.onCPButtonLoaded,
+			onPaymentPrefill: click2payRequest.paymentPrefill,
+			onPaymentSuccess: click2payRequest.paymentSuccess,
+		});
 	}
-    if (selectedMethod === "bbpos") {
-        clearBBPOSParameters()
-        displayParameterToast("xAmount", amount.value)
-        displayParameterToast("xCommand", xcommand.value)
-        if (duplicate.checked) {
-            displayParameterToast("xAllowDuplicate", "True")
-        }
-        displayParameterToast("xKey", xkey.value);
-    }
+	if (selectedMethod === "bbpos") {
+		clearBBPOSParameters();
+		displayParameterToast("xAmount", amount.value);
+		displayParameterToast("xCommand", xcommand.value);
+		if (duplicate.checked) {
+			displayParameterToast("xAllowDuplicate", "True");
+		}
+		displayParameterToast("xKey", xkey.value);
+	}
 }
 
 //base api call
 form.addEventListener("submit", (event) => {
 	event.preventDefault();
+	submitBtn.disabled = true;
 	let ifieldsKey = document.getElementById("ifields-key").value;
 	setAccount(ifieldsKey, "Testing Pane", "1.0");
 	threedstuff();
-	submitBtn.disabled = true;
-	getTokens(
-		function () {
-			let payload = formToJSON(form);
-			fetch("/submit", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(payload),
-			})
-				.then((response) => response.json()) // Parse the response as JSON
-				.then((data) => {
-					displayLogToast(data.Response, "Card");
-					handleVerify(data);
-				});
-		},
-		function () {
-			submitBtn.disabled = false;
-		},
-		30000
-	);
+	// wait until ck3DS.configuration.process3DS equals true
+	let ready = ck3DS.configuration.process3DS;
+	let tokenInterval = setInterval(function () {
+		ready = ck3DS.configuration.process3DS;
+		if (ready === true) {
+			getTokens(
+				function () {
+					let payload = formToJSON(form);
+					fetch("/submit", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(payload),
+					})
+						.then((response) => response.json()) // Parse the response as JSON
+						.then((data) => {
+							displayLogToast(data.Response, "Card");
+							handleVerify(data);
+						});
+				},
+				function () {
+					submitBtn.disabled = false;
+				},
+				30000
+			);
+			clearInterval(tokenInterval);
+		}
+	}, 300);
 });
 
 //setting iFields styles
@@ -634,76 +640,83 @@ function processAP(paymentResponse) {
 
 //Click to pay
 const click2payRequest = {
-    environment: c2pEnvironment.sandbox,
-    externalClientId: clientID.value,
-    onCPButtonLoaded: function (resp) {
-        if (!resp) return;
-        if (resp.status === iStatus.success) {
-            console.log("Loaded Click To Pay Button");
-        } else if (resp.reason) {
-            console.log(`Click To Pay Button Load Failed: ${resp.reason}`);
-        }
-    },
-    paymentPrefill: function () {
-        let result = {
-            merchantRequestId: "Merchant defined request ID",
-            currencyCode: "USD",
-            description: "...corp Product",
-            orderId: "Merchant defined order ID",
-            subtotal: amount.value,
-            shippingHandling: "0.00",
-            tax: "0.00",
-            discount: "0.00",
-            giftWrap: "0.00",
-            misc: "0.00",
-            total: "0",
-        }
-        result.total = roundTo((result.subtotal + result.shippingHandling + result.tax + result.discount + result.giftWrap + result.misc), 2)
-        console.log(result)
-        return result
-    },
-    paymentSuccess: function (clickToPayResponse) {
-        return new Promise(function (resolve, reject) {
-            console.log(clickToPayResponse);
-            paymentToken = clickToPayResponse.payload.transactionId;
-            encodedToken = window.btoa(JSON.stringify(paymentToken));
-            let payload = formToJSON(form);
-            let amountf = amount.value;
-            console.log(
-                JSON.stringify({
-                    payload,
-                    clickToPayResponse,
-                    encodedToken,
-                    amountf,
-                })
-            );
-            fetch("/click2pay", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    payload,
-                    clickToPayResponse,
-                    encodedToken,
-                    amountf,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.Response.xStatus) {
-                        if (data.Response.xStatus === "Approved") {
-                            resolve(data);
-                        } else {
-                            reject(data);
-                        }
-                    } else {
-                        reject(data);
-                    }
-                    displayLogToast(data.Response, "Click To Pay");
-                });
-        });
-    },
-}
-
+	environment: c2pEnvironment.sandbox,
+	externalClientId: clientID.value,
+	onCPButtonLoaded: function (resp) {
+		if (!resp) return;
+		if (resp.status === iStatus.success) {
+			console.log("Loaded Click To Pay Button");
+		} else if (resp.reason) {
+			console.log(`Click To Pay Button Load Failed: ${resp.reason}`);
+		}
+	},
+	paymentPrefill: function () {
+		let result = {
+			merchantRequestId: "Merchant defined request ID",
+			currencyCode: "USD",
+			description: "...corp Product",
+			orderId: "Merchant defined order ID",
+			subtotal: amount.value,
+			shippingHandling: "0.00",
+			tax: "0.00",
+			discount: "0.00",
+			giftWrap: "0.00",
+			misc: "0.00",
+			total: "0",
+		};
+		result.total = roundTo(
+			result.subtotal +
+				result.shippingHandling +
+				result.tax +
+				result.discount +
+				result.giftWrap +
+				result.misc,
+			2
+		);
+		console.log(result);
+		return result;
+	},
+	paymentSuccess: function (clickToPayResponse) {
+		return new Promise(function (resolve, reject) {
+			console.log(clickToPayResponse);
+			paymentToken = clickToPayResponse.payload.transactionId;
+			encodedToken = window.btoa(JSON.stringify(paymentToken));
+			let payload = formToJSON(form);
+			let amountf = amount.value;
+			console.log(
+				JSON.stringify({
+					payload,
+					clickToPayResponse,
+					encodedToken,
+					amountf,
+				})
+			);
+			fetch("/click2pay", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					payload,
+					clickToPayResponse,
+					encodedToken,
+					amountf,
+				}),
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					if (data.Response.xStatus) {
+						if (data.Response.xStatus === "Approved") {
+							resolve(data);
+						} else {
+							reject(data);
+						}
+					} else {
+						reject(data);
+					}
+					displayLogToast(data.Response, "Click To Pay");
+				});
+		});
+	},
+};
 
 //bbpos payment
 const bbposEndpoint = document.getElementById("bbposEndpoint");
@@ -715,17 +728,22 @@ bbposButton.addEventListener("click", function (event) {
 		xamount: amount.value,
 		xkey: xkey.value,
 	};
-    function updatePayload(key, value) {
-        payload[key] = value;
-    }
-    const toastParameterElements = toastParameterStack.querySelectorAll(".toast.show");
-    toastParameterElements.forEach((toastParameterElement) => {
-        const keyInput = toastParameterElement.querySelector(".form-control:first-child");
-        const valueInput = toastParameterElement.querySelector(".form-control:last-child");
-        const key = keyInput.value;
-        const value = valueInput.value;
-        updatePayload(key.toLowerCase(), value);
-    });
+	function updatePayload(key, value) {
+		payload[key] = value;
+	}
+	const toastParameterElements =
+		toastParameterStack.querySelectorAll(".toast.show");
+	toastParameterElements.forEach((toastParameterElement) => {
+		const keyInput = toastParameterElement.querySelector(
+			".form-control:first-child"
+		);
+		const valueInput = toastParameterElement.querySelector(
+			".form-control:last-child"
+		);
+		const key = keyInput.value;
+		const value = valueInput.value;
+		updatePayload(key.toLowerCase(), value);
+	});
 	let url = bbposEndpoint.value;
 	body = new URLSearchParams(payload).toString();
 	console.log(body);
@@ -743,60 +761,56 @@ bbposButton.addEventListener("click", function (event) {
 		});
 });
 
-
-
 //EBT Online
 ebtOnlineButton.addEventListener("click", function (event) {
 	event.preventDefault();
-    let payload = formToJSON(form)
-    if (payload["refnum"] !== "") {
-        payload["ebtCommand"] = xcommand.value
-        payload["refnum"] = refnum.value
-    }
-    else payload["ebtCommand"] = "ebtonline:initiate"
-    fetch("/ebtonline", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            displayLogToast(data.Response, "EBT Online");
-            console.log(data);
-            if (data.Response.xPinPadURL) {
-                redirectToPin(data.Response)
-            }
-        });
+	let payload = formToJSON(form);
+	if (payload["refnum"] !== "") {
+		payload["ebtCommand"] = xcommand.value;
+		payload["refnum"] = refnum.value;
+	} else payload["ebtCommand"] = "ebtonline:initiate";
+	fetch("/ebtonline", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(payload),
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			displayLogToast(data.Response, "EBT Online");
+			console.log(data);
+			if (data.Response.xPinPadURL) {
+				redirectToPin(data.Response);
+			}
+		});
 });
 //enter ebt pin
-const pinPadLink = document.getElementById("pinPadLink")
-const modaliFrame = document.getElementById("modaliFrame")
+const pinPadLink = document.getElementById("pinPadLink");
+const modaliFrame = document.getElementById("modaliFrame");
 const accuReturnURL = document.getElementById("AccuReturnURL");
 const accuId = document.getElementById("AccuId");
 const accuLanguage = document.getElementById("AccuLanguage");
 //const pinModal = document.getElementById("pinModal");
 const pinPadRefnum = document.getElementById("pinPadRefnum");
 const pinPadCommand = document.getElementById("pinPadCommand");
-var pinModal = new bootstrap.Modal(document.getElementById('pinModal'), {
-    keyboard: false
-  })  
+var pinModal = new bootstrap.Modal(document.getElementById("pinModal"), {
+	keyboard: false,
+});
 
-function redirectToPin(Response){
-    pinPadLink.action = Response.xPinPadURL
-    accuReturnURL.value = "https://cardknox.link/ebtcontinued"
-    accuId.value = Response.xAccuID
-    accuLanguage.value = "en-US"
-    pinPadCommand.value = xcommand.value
-    pinPadRefnum.value = Response.xRefNum
-    pinModal.show()
-    document.forms["pinPadLink"].submit()
-    refnum.value = Response.xRefNum
+function redirectToPin(Response) {
+	pinPadLink.action = Response.xPinPadURL;
+	accuReturnURL.value = "https://cardknox.link/ebtcontinued";
+	accuId.value = Response.xAccuID;
+	accuLanguage.value = "en-US";
+	pinPadCommand.value = xcommand.value;
+	pinPadRefnum.value = Response.xRefNum;
+	pinModal.show();
+	document.forms["pinPadLink"].submit();
+	refnum.value = Response.xRefNum;
 }
-
 
 //Ending of file
 billingShow();
-sandboxMode()
+sandboxMode();
 let radioButton = document.getElementById("credit");
 radioButton.checked = true;
 radioButton.dispatchEvent(new Event("click"));
