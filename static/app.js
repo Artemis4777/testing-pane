@@ -255,10 +255,8 @@ form.addEventListener("submit", (event) => {
 	setAccount(ifieldsKey, "Testing Pane", "1.0");
 	threedstuff();
 	// wait until ck3DS.configuration.process3DS equals true
-	let ready = ck3DS.configuration.process3DS;
 	let tokenInterval = setInterval(function () {
-		ready = ck3DS.configuration.process3DS;
-		if (ready === true) {
+		if (ck3DS.configuration.process3DS === true) {
 			getTokens(
 				function () {
 					let payload = formToJSON(form);
