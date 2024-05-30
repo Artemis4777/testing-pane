@@ -13,10 +13,11 @@ def index():
     return render_template(["index.html", "app.js", "style.css"])
 
 
-#apple pay domain verification
+# apple pay domain verification
 @application.route("/.well-known/apple-developer-merchantid-domain-association")
 def applemid():
     return send_from_directory(application.static_folder, "apple-developer-merchantid-domain-association")
+
 
 # submit to gateway
 @application.route("/submit", methods=["POST"])
@@ -54,13 +55,13 @@ def submit():
         "xallowduplicate": dupe,
     })
     print(payload)
-    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    apiCall = requests.request("POST", url, headers=headers, data=payload)
     response = apiCall.json()
     logging.info(response["xStatus"], response["xRefNum"])
     return json.dumps({"Status": 200, "Response": response})
 
 
-#3D Secure friction handling
+# 3D Secure friction handling
 @application.route("/verify", methods=["POST"])
 def verify():
     print(request.is_json)
@@ -83,14 +84,14 @@ def verify():
         "x3dsSignatureVerificationStatus": content["x3dsSignatureVerificationStatus"],
         "x3dsActionCode": content["x3dsActionCode"],
     })
-    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    apiCall = requests.request("POST", url, headers=headers, data=payload)
     response = apiCall.json()
     print(response["xStatus"], response["xRefNum"])
     return json.dumps({"Status": 200, "Response": response})
 
 
-#google pay
-@application.route("/googlepay", methods = ["POST"])
+# google pay
+@application.route("/googlepay", methods=["POST"])
 def googlepay():
     print(request.is_json)
     payloads = request.get_json()
@@ -122,13 +123,13 @@ def googlepay():
         "xBillZip": gpContent["paymentData"]["paymentMethodData"]["info"]["billingAddress"]["postalCode"],
         "xallowduplicate": dupe,
     })
-    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    apiCall = requests.request("POST", url, headers=headers, data=payload)
     response = apiCall.json()
     print(response["xStatus"], response["xRefNum"])
     return json.dumps({"Status": 200, "Response": response})
 
 
-@application.route("/applepay", methods = ["POST"])
+@application.route("/applepay", methods=["POST"])
 def applepay():
     logging.info(request.is_json)
     payloads = request.get_json()
@@ -163,13 +164,13 @@ def applepay():
         "xallowduplicate": dupe,
     })
     logging.info(payload)
-    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    apiCall = requests.request("POST", url, headers=headers, data=payload)
     response = apiCall.json()
     logging.info(response)
     return json.dumps({"Status": 200, "Response": response})
 
 
-@application.route("/click2pay", methods = ["POST"])
+@application.route("/click2pay", methods=["POST"])
 def click2pay():
     logging.info(request.is_json)
     payloads = request.get_json()
@@ -199,10 +200,11 @@ def click2pay():
         "xallowduplicate": dupe,
     })
     logging.info(payload)
-    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    apiCall = requests.request("POST", url, headers=headers, data=payload)
     response = apiCall.json()
     logging.info(response)
     return json.dumps({"Status": 200, "Response": response})
+
 
 # EBT Online to gateway
 @application.route("/ebtonline", methods=["POST"])
@@ -231,10 +233,11 @@ def ebtOnline():
         "xallowduplicate": dupe,
     })
     print(payload)
-    apiCall = requests.request("POST", url, headers = headers, data = payload)
+    apiCall = requests.request("POST", url, headers=headers, data=payload)
     response = apiCall.json()
     logging.info(response["xStatus"], response["xRefNum"])
     return json.dumps({"Status": 200, "Response": response})
+
 
 # EBT Online redirect
 @application.route("/ebtcontinued", methods=["POST", "GET"])

@@ -255,8 +255,10 @@ form.addEventListener("submit", (event) => {
 	setAccount(ifieldsKey, "Testing Pane", "1.0");
 	threedstuff();
 	// wait until ck3DS.configuration.process3DS equals true
+	let tries = 0;
 	let tokenInterval = setInterval(function () {
-		if (ck3DS.configuration.process3DS === true) {
+		tries++;
+		if (!threeD.checked || ck3DS.initialized || tries > 5) {
 			getTokens(
 				function () {
 					let payload = formToJSON(form);
@@ -278,7 +280,7 @@ form.addEventListener("submit", (event) => {
 			);
 			clearInterval(tokenInterval);
 		}
-	}, 300);
+	}, 3000);
 });
 
 //setting iFields styles
@@ -297,12 +299,14 @@ setIfieldStyle("cvv", styles);
 
 //check if 3D Secure
 function threedstuff() {
-	if (threeD.checked) {
-		console.log("enabling 3ds with friction");
+	if (threeD.checked && threeDf.checked) {
+		console.log("Enabling 3ds with friction");
 		enable3DS(enviro, handle3DSResults);
-	} else {
-		console.log("enabling 3ds without friction");
+	} else if (threeD.checked) {
+		console.log("Enabling 3ds without friction");
 		enable3DS(enviro);
+	} else {
+		console.log("Not enabling 3ds");
 	}
 }
 
